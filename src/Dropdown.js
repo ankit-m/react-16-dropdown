@@ -1,7 +1,19 @@
 import React, { Fragment, Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import DefaultMenu from './Menu';
+import Menu from './Menu';
+
+function DefaultButton (props) {
+  return (
+    <button
+      ref={props.buttonRef}
+      onClick={props.onClick}
+      onKeyUp={props.onKeyUp}
+    >
+      Click me!
+    </button>
+  );
+}
 
 export default class Dropdown extends Component {
   constructor (props) {
@@ -81,9 +93,7 @@ export default class Dropdown extends Component {
   }
 
   render () {
-    // @todo use default refs
-    const Button = this.props.buttonRenderer || DefaultButton;
-    const Menu = this.props.menuRenderer || DefaultMenu;
+    const Button = this.props.buttonComponent;
 
     return (
       <Fragment>
@@ -105,14 +115,6 @@ export default class Dropdown extends Component {
   }
 }
 
-function DefaultButton (props) {
-  return (
-    <button
-      ref={props.buttonRef}
-      onClick={props.onClick}
-      onKeyUp={props.onKeyUp}
-    >
-      Click me!
-    </button>
-  );
+Dropdown.defaultProps = {
+  buttonComponent: DefaultButton
 }

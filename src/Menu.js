@@ -1,6 +1,34 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+function DefaultMenu (props) {
+  return (
+    <div
+      role='listbox'
+      className='menu'
+      tabIndex={-1}
+      ref={props.menuRef}
+      onKeyUp={props.onKeyUp}
+      onKeyDown={props.onKeyDown}
+    >
+      {props.children}
+    </div>
+  );
+}
+
+function DefaultOption (props) {
+  return (
+    <div
+      role='option'
+      className={`item${props.focused ? ' focused' : ''}`}
+      onClick={props.onClick}
+      onMouseOver={props.onMouseOver}
+    >
+      {props.label}
+    </div>
+  );
+}
+
 /**
  * Managing focus
  *
@@ -64,8 +92,8 @@ export default class Menu extends Component {
   }
 
   render () {
-    const Option = this.props.optionRenderer || DefaultOption,
-      Menu = this.props.menuRenderer || DefaultMenu;
+    const Option = this.props.optionComponent;
+    const Menu = this.props.menuComponent;
 
     const menu = (
       <Menu
@@ -91,30 +119,7 @@ export default class Menu extends Component {
   }
 }
 
-function DefaultMenu (props) {
-  return (
-    <div
-      role='listbox'
-      className='menu'
-      tabIndex={-1}
-      ref={props.menuRef}
-      onKeyUp={props.onKeyUp}
-      onKeyDown={props.onKeyDown}
-    >
-      {props.children}
-    </div>
-  );
-}
-
-function DefaultOption (props) {
-  return (
-    <div
-      role='option'
-      className={`item${props.focused ? ' focused' : ''}`}
-      onClick={props.onClick}
-      onMouseOver={props.onMouseOver}
-    >
-      {props.label}
-    </div>
-  );
+Menu.defaultProps = {
+  menuComponent: DefaultMenu,
+  optionComponent: DefaultOption
 }
