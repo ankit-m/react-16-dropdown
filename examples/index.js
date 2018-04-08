@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import React, { Fragment } from 'react';
 
-import Dropdown from './Dropdown';
+import Dropdown from 'react-16-dropdown';
 
 function App () {
   const options = [
