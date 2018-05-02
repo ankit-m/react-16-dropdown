@@ -36,12 +36,12 @@ export default class Dropdown extends Component {
 
   componentDidUpdate () {
     if (this.state.open) {
-      document.addEventListener('keyup', this.handleEscape);
-      document.addEventListener('click', this.handleClickOutside);
+      this.props.closeOnEscape && document.addEventListener('keyup', this.handleEscape);
+      this.props.closeOnClickOutside && document.addEventListener('click', this.handleClickOutside);
     }
     else {
-      document.removeEventListener('keyup', this.handleEscape);
-      document.removeEventListener('click', this.handleClickOutside);
+      this.props.closeOnEscape && document.removeEventListener('keyup', this.handleEscape);
+      this.props.closeOnClickOutside && document.removeEventListener('click', this.handleClickOutside);
     }
   }
 
@@ -119,5 +119,7 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.defaultProps = {
-  triggerComponent: DefaultTrigger
+  triggerComponent: DefaultTrigger,
+  closeOnEscape: true,
+  closeOnClickOutside: true
 }

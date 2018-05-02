@@ -22,6 +22,7 @@ function App () {
   return (
     <Fragment>
       <Dropdown
+        closeOnClickOutside={false}
         align='right'
         className='custom-class'
         options={options}
