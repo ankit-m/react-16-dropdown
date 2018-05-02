@@ -75,7 +75,7 @@ export default class Dropdown extends Component {
 
   handleOptionClick (val) {
     this.props.onClick(val);
-    this.closeMenu(true);
+    this.props.closeOnOptionClick && this.closeMenu(true);
   }
 
   handleTriggerKeyUp (e) {
@@ -121,5 +121,6 @@ export default class Dropdown extends Component {
 Dropdown.defaultProps = {
   triggerComponent: DefaultTrigger,
   closeOnEscape: true,
-  closeOnClickOutside: true
+  closeOnClickOutside: true,
+  closeOnOptionClick: true
 }

@@ -27,6 +27,7 @@ function App () {
         className='custom-class'
         options={options}
         onClick={e => console.log(e)}
+        onClose={() => console.log('closed')}
       />
       <select>
         {options.map((o) => {
