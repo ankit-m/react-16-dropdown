@@ -6,8 +6,9 @@ function DefaultMenu (props) {
     <div
       role='listbox'
       className='menu'
-      tabIndex={-1}
       ref={props.menuRef}
+      tabIndex={-1}
+      style={props.style}
       onKeyUp={props.onKeyUp}
       onKeyDown={props.onKeyDown}
     >
@@ -17,16 +18,33 @@ function DefaultMenu (props) {
 }
 
 function DefaultOption (props) {
+  const classes = 'item' +
+    (props.focused ? ' focused': '') +
+    (props.className ? ` ${props.className}` : '');
+
   return (
     <div
       role='option'
-      className={`item${props.focused ? ' focused' : ''}`}
+      className={classes}
       onClick={props.onClick}
       onMouseOver={props.onMouseOver}
     >
       {props.label}
     </div>
   );
+}
+
+function getAbsoluteBoundingRect (el) {
+  let rect = {};
+  let clientRect = el.getBoundingClientRect();
+
+  rect.left = window.scrollX + clientRect.left;
+  rect.top = window.scrollY + clientRect.top;
+  rect.right = clientRect.right;
+  rect.bottom = clientRect.bottom;
+  rect.height = clientRect.height;
+
+  return rect;
 }
 
 /**
@@ -41,10 +59,12 @@ export default class Menu extends Component {
     this.state = { focused: -1 };
     // @todo add class
     this.el = document.createElement('div');
+    this.boundingRect = getAbsoluteBoundingRect(this.props.button);
 
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.setRef = this.setRef.bind(this);
+    this.getAlignment = this.getAlignment.bind(this);
   }
 
   componentDidMount () {
@@ -91,23 +111,47 @@ export default class Menu extends Component {
     }
   }
 
+  getAlignment () {
+    // @todo allow other alignments
+    const top = this.boundingRect.top + this.boundingRect.height;
+
+    if (this.props.align === 'left') {
+      return {
+        top,
+        left: this.boundingRect.left
+      };
+    }
+
+    if (this.props.align === 'right') {
+      return {
+        top,
+        right: window.innerWidth - this.boundingRect.right - window.scrollX
+      };
+    }
+
+    return {};
+  }
+
   render () {
     const Option = this.props.optionComponent;
     const Menu = this.props.menuComponent;
+    const styles = this.getAlignment();
 
     const menu = (
       <Menu
         menuRef={this.setRef}
+        style={styles}
         onKeyUp={this.handleKeyUp}
         onKeyDown={this.handleKeyDown}
       >
-        {this.props.options.map((e, i) => {
+        {this.props.options.map((option, i) => {
           return (
             <Option
+              className={option.className}
               focused={this.state.focused === i}
-              key={e.value}
-              label={e.label}
-              onClick={() => { this.props.onClick(e.value); }}
+              key={option.value}
+              label={option.label}
+              onClick={() => { this.props.onClick(option.value); }}
               onMouseOver={() => { this.setState({ focused: i }); }}
             />
           );

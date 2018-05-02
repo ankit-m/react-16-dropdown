@@ -1,4 +1,15 @@
+body {
+  height: 1000px;
+  width: 2000px;
+}
+
+button {
+  margin-left: 250px;
+}
+
 .menu {
+  position: absolute;
+  background: white;
   border: 1px solid black;
   border-radius: 3px;
   margin-top: 8px;

@@ -94,9 +94,11 @@ export default class Dropdown extends Component {
 
   render () {
     const Button = this.props.buttonComponent;
+    const classes = 'react-16-dropdown' +
+      (this.props.className ? ` ${this.props.className}` : '');
 
     return (
-      <Fragment>
+      <div className={classes}>
         <Button
           buttonRef={this.setButtonRef}
           onClick={this.handleButtonClick}
@@ -106,11 +108,12 @@ export default class Dropdown extends Component {
         {this.state.open &&
           <Menu
             {...this.props}
+            button={this.button}
             menuRef={this.setMenuRef}
             onClick={this.handleOptionClick}
           />
         }
-      </Fragment>
+      </div>
     );
   }
 }

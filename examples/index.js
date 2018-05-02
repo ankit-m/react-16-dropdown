@@ -7,7 +7,8 @@ function App () {
   const options = [
     {
       label: 'Inception',
-      value: 'inception'
+      value: 'inception',
+      className: 'inception'
     },
     {
       label: 'Prestige',
@@ -21,8 +22,9 @@ function App () {
   return (
     <Fragment>
       <Dropdown
+        align='right'
+        className='custom-class'
         options={options}
-        value='inception'
         onClick={e => console.log(e)}
       />
       <select>
