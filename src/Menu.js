@@ -59,11 +59,11 @@ export default class Menu extends Component {
     this.state = { focused: -1 };
     // @todo add class
     this.el = document.createElement('div');
-    this.boundingRect = getAbsoluteBoundingRect(this.props.button);
+    this.boundingRect = getAbsoluteBoundingRect(this.props.trigger);
 
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.setRef = this.setRef.bind(this);
+    this.setMenuRef = this.setMenuRef.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
   }
 
@@ -77,7 +77,7 @@ export default class Menu extends Component {
     document.body.removeChild(this.el);
   }
 
-  setRef (node) {
+  setMenuRef (node) {
     this.node = node;
 
     this.props.menuRef(node);
@@ -139,7 +139,7 @@ export default class Menu extends Component {
 
     const menu = (
       <Menu
-        menuRef={this.setRef}
+        menuRef={this.setMenuRef}
         style={styles}
         onKeyUp={this.handleKeyUp}
         onKeyDown={this.handleKeyDown}

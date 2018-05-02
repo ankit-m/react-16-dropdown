@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 
 import Menu from './Menu';
 
-function DefaultButton (props) {
+function DefaultTrigger (props) {
   return (
     <button
-      ref={props.buttonRef}
+      ref={props.triggerRef}
       onClick={props.onClick}
       onKeyUp={props.onKeyUp}
     >
@@ -23,15 +23,15 @@ export default class Dropdown extends Component {
       open: false,
     };
 
-    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.handleTriggerClick = this.handleTriggerClick.bind(this);
     this.handleOptionClick = this.handleOptionClick.bind(this);
-    this.handleButtonKeyUp = this.handleButtonKeyUp.bind(this);
+    this.handleTriggerKeyUp = this.handleTriggerKeyUp.bind(this);
     this.handleEscape = this.handleEscape.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.setMenuRef = this.setMenuRef.bind(this);
-    this.setButtonRef = this.setButtonRef.bind(this);
+    this.setTriggerRef = this.setTriggerRef.bind(this);
   }
 
   componentDidUpdate () {
@@ -47,7 +47,7 @@ export default class Dropdown extends Component {
 
   closeMenu (focus) {
     this.setState({ open: false }, () => {
-      focus && this.button.focus();
+      focus && this.trigger.focus();
     });
   }
 
@@ -67,7 +67,7 @@ export default class Dropdown extends Component {
     }
   }
 
-  handleButtonClick (e) {
+  handleTriggerClick (e) {
     this.setState((prevState) => {
       return { open: !prevState.open };
     })
@@ -78,7 +78,7 @@ export default class Dropdown extends Component {
     this.closeMenu(true);
   }
 
-  handleButtonKeyUp (e) {
+  handleTriggerKeyUp (e) {
     if (e.key === 'ArrowDown') {
       this.openMenu();
     }
@@ -88,27 +88,27 @@ export default class Dropdown extends Component {
     this.menu = node;
   }
 
-  setButtonRef (node) {
-    this.button = node;
+  setTriggerRef (node) {
+    this.trigger = node;
   }
 
   render () {
-    const Button = this.props.buttonComponent;
+    const Trigger = this.props.triggerComponent;
     const classes = 'react-16-dropdown' +
       (this.props.className ? ` ${this.props.className}` : '');
 
     return (
       <div className={classes}>
-        <Button
-          buttonRef={this.setButtonRef}
-          onClick={this.handleButtonClick}
-          onKeyUp={this.handleButtonKeyUp}
+        <Trigger
+          triggerRef={this.setTriggerRef}
+          onClick={this.handleTriggerClick}
+          onKeyUp={this.handleTriggerKeyUp}
         />
         
         {this.state.open &&
           <Menu
             {...this.props}
-            button={this.button}
+            trigger={this.trigger}
             menuRef={this.setMenuRef}
             onClick={this.handleOptionClick}
           />
@@ -119,5 +119,5 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.defaultProps = {
-  buttonComponent: DefaultButton
+  triggerComponent: DefaultTrigger
 }
