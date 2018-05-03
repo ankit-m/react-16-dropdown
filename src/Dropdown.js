@@ -6,6 +6,7 @@ import Menu from './Menu';
 function DefaultTrigger (props) {
   return (
     <button
+      disabled={props.disabled}
       ref={props.triggerRef}
       onClick={props.onClick}
       onKeyUp={props.onKeyUp}
@@ -98,8 +99,12 @@ export default class Dropdown extends Component {
       (this.props.className ? ` ${this.props.className}` : '');
 
     return (
-      <div className={classes}>
+      <div
+        className={classes}
+        id={this.props.id}
+      >
         <Trigger
+          disabled={this.props.disabled}
           triggerRef={this.setTriggerRef}
           onClick={this.handleTriggerClick}
           onKeyUp={this.handleTriggerKeyUp}
@@ -122,5 +127,6 @@ Dropdown.defaultProps = {
   triggerComponent: DefaultTrigger,
   closeOnEscape: true,
   closeOnClickOutside: true,
-  closeOnOptionClick: true
+  closeOnOptionClick: true,
+  disabled: false
 }

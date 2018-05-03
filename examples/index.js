@@ -22,6 +22,7 @@ function App () {
   return (
     <Fragment>
       <Dropdown
+        id='someid'
         closeOnClickOutside={false}
         align='right'
         className='custom-class'
