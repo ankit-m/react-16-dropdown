@@ -17,34 +17,36 @@ function DefaultMenu (props) {
   );
 }
 
-function DefaultOption (props) {
-  const classes = 'item' +
-    (props.focused ? ' focused': '') +
-    (props.className ? ` ${props.className}` : '');
+class DefaultOption extends React.PureComponent {
+  constructor (props) {
+    super(props);
 
-  return (
-    <div
-      role='option'
-      className={classes}
-      onClick={props.onClick}
-      onMouseOver={props.onMouseOver}
-    >
-      {props.label}
-    </div>
+    this.optionRef = React.createRef();
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.focused !== prevProps.focused && this.props.focused) {
+      this.optionRef.current.focus()
+    }
+  }
+
+  render () {
+    const classes = 'item' +
+      (this.props.focused ? ' focused': '') +
+      (this.props.className ? ` ${this.props.className}` : '');
+
+    return (
+      <div
+        role='option'
+        className={classes}
+        tabIndex={-1}
+        ref={this.optionRef}
+        onClick={this.props.onClick}
+      >
+        {this.props.label}
+      </div>
   );
-}
-
-function getAbsoluteBoundingRect (el) {
-  let rect = {};
-  let clientRect = el.getBoundingClientRect();
-
-  rect.left = window.scrollX + clientRect.left;
-  rect.top = window.scrollY + clientRect.top;
-  rect.right = clientRect.right;
-  rect.bottom = clientRect.bottom;
-  rect.height = clientRect.height;
-
-  return rect;
+  }
 }
 
 /**
@@ -59,38 +61,21 @@ export default class Menu extends Component {
     this.state = { focused: -1 };
     // @todo add class
     this.el = document.createElement('div');
-    this.boundingRect = getAbsoluteBoundingRect(this.props.trigger);
-
-    this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.setMenuRef = this.setMenuRef.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
   }
 
   componentDidMount () {
     document.body.appendChild(this.el);
 
-    this.node.focus();
+    this.props.menuRef.current.focus();
   }
 
   componentWillUnmount () {
     document.body.removeChild(this.el);
   }
 
-  setMenuRef (node) {
-    this.node = node;
-
-    this.props.menuRef(node);
-  }
-
   handleKeyDown (e) {
-    if (e.key === 'Tab') {
-      // prevent blur from Tab key (only escape allowed)
-      e.preventDefault();
-    }
-  }
-
-  handleKeyUp (e) {
     const options = this.props.options;
     const maxFocus = options.length - 1;
 
@@ -109,23 +94,26 @@ export default class Menu extends Component {
         return { focused: prevState.focused > 0 ? prevState.focused - 1 : 0 };
       });
     }
+
+    return e.preventDefault();
   }
 
   getAlignment () {
     // @todo allow other alignments
-    const top = this.boundingRect.top + this.boundingRect.height;
+    const boundingRect = this.props.triggerBoundingRect,
+      top = boundingRect.top + boundingRect.height;
 
     if (this.props.align === 'left') {
       return {
         top,
-        left: this.boundingRect.left
+        left: boundingRect.left
       };
     }
 
     if (this.props.align === 'right') {
       return {
         top,
-        right: window.innerWidth - this.boundingRect.right - window.scrollX
+        right: window.innerWidth - boundingRect.right - window.scrollX
       };
     }
 
@@ -139,9 +127,8 @@ export default class Menu extends Component {
 
     const menu = (
       <Menu
-        menuRef={this.setMenuRef}
+        menuRef={this.props.menuRef}
         style={styles}
-        onKeyUp={this.handleKeyUp}
         onKeyDown={this.handleKeyDown}
       >
         {this.props.options.map((option, i) => {
@@ -152,7 +139,6 @@ export default class Menu extends Component {
               key={option.value}
               label={option.label}
               onClick={() => { this.props.onClick(option.value); }}
-              onMouseOver={() => { this.setState({ focused: i }); }}
             />
           );
         })}

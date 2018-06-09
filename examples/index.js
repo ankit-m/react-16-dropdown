@@ -13,6 +13,10 @@ function App () {
     {
       label: 'Prestige',
       value: 'prestige'
+    },
+    {
+      label: 'Dunkirk',
+      value: 'dunkirk'
     }
   ];
 
@@ -23,8 +27,7 @@ function App () {
     <Fragment>
       <Dropdown
         id='someid'
-        closeOnClickOutside={false}
-        align='right'
+        align='left'
         className='custom-class'
         options={options}
         onClick={e => console.log(e)}

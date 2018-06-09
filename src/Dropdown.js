@@ -3,12 +3,26 @@ import ReactDOM from 'react-dom';
 
 import Menu from './Menu';
 
+function getAbsoluteBoundingRect (el) {
+  let rect = {};
+  let clientRect = el.getBoundingClientRect();
+
+  rect.left = window.scrollX + clientRect.left;
+  rect.top = window.scrollY + clientRect.top;
+  rect.right = clientRect.right;
+  rect.bottom = clientRect.bottom;
+  rect.height = clientRect.height;
+
+  return rect;
+}
+
 function DefaultTrigger (props) {
   return (
     <button
       disabled={props.disabled}
       ref={props.triggerRef}
       onClick={props.onClick}
+      onKeyDown={props.onKeyDown}
       onKeyUp={props.onKeyUp}
     >
       Click me!
@@ -24,15 +38,21 @@ export default class Dropdown extends Component {
       open: false,
     };
 
+    this.menuRef = React.createRef();
+    this.triggerRef = React.createRef();
+    this.activeOptionRef = React.createRef();
+
     this.handleTriggerClick = this.handleTriggerClick.bind(this);
     this.handleOptionClick = this.handleOptionClick.bind(this);
-    this.handleTriggerKeyUp = this.handleTriggerKeyUp.bind(this);
+    this.handleTriggerKeyDown = this.handleTriggerKeyDown.bind(this);
     this.handleEscape = this.handleEscape.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.setMenuRef = this.setMenuRef.bind(this);
-    this.setTriggerRef = this.setTriggerRef.bind(this);
+  }
+
+  componentDidMount () {
+    this.triggerBoundingRect = getAbsoluteBoundingRect(this.triggerRef.current);
   }
 
   componentDidUpdate () {
@@ -48,7 +68,7 @@ export default class Dropdown extends Component {
 
   closeMenu (focus) {
     this.setState({ open: false }, () => {
-      focus && this.trigger.focus();
+      focus && this.triggerRef.current.focus();
     });
   }
 
@@ -57,7 +77,7 @@ export default class Dropdown extends Component {
   }
 
   handleClickOutside (e) {
-    if (!this.menu.contains(e.target)) {
+    if (!this.menuRef.current.contains(e.target)) {
       this.closeMenu();
     }
   }
@@ -74,23 +94,17 @@ export default class Dropdown extends Component {
     })
   }
 
-  handleOptionClick (val) {
-    this.props.onClick(val);
-    this.props.closeOnOptionClick && this.closeMenu(true);
-  }
-
-  handleTriggerKeyUp (e) {
+  handleTriggerKeyDown (e) {
     if (e.key === 'ArrowDown') {
       this.openMenu();
+
+      e.preventDefault();
     }
   }
 
-  setMenuRef (node) {
-    this.menu = node;
-  }
-
-  setTriggerRef (node) {
-    this.trigger = node;
+  handleOptionClick(val) {
+    this.props.onClick(val);
+    this.props.closeOnOptionClick && this.closeMenu(true);
   }
 
   render () {
@@ -105,16 +119,16 @@ export default class Dropdown extends Component {
       >
         <Trigger
           disabled={this.props.disabled}
-          triggerRef={this.setTriggerRef}
+          triggerRef={this.triggerRef}
           onClick={this.handleTriggerClick}
-          onKeyUp={this.handleTriggerKeyUp}
+          onKeyDown={this.handleTriggerKeyDown}
         />
         
         {this.state.open &&
           <Menu
             {...this.props}
-            trigger={this.trigger}
-            menuRef={this.setMenuRef}
+            menuRef={this.menuRef}
+            triggerBoundingRect={this.triggerBoundingRect}
             onClick={this.handleOptionClick}
           />
         }
@@ -127,6 +141,7 @@ Dropdown.defaultProps = {
   triggerComponent: DefaultTrigger,
   closeOnEscape: true,
   closeOnClickOutside: true,
-  closeOnOptionClick: true,
-  disabled: false
+  closeOnOptionClick: false,
+  disabled: false,
+  align: 'left'
 }
