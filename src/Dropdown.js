@@ -48,13 +48,11 @@ export default class Dropdown extends Component {
   constructor (props) {
     super(props);
 
-    this.state = {
-      open: false,
-    };
+    this.state = { open: Boolean(props.open) };
 
     this.menuRef = React.createRef();
     this.triggerRef = React.createRef();
-    this.activeOptionRef = React.createRef();
+    this.controlled = this.props.hasOwnProperty('open');
 
     this.handleTriggerClick = this.handleTriggerClick.bind(this);
     this.handleOptionClick = this.handleOptionClick.bind(this);
@@ -66,10 +64,14 @@ export default class Dropdown extends Component {
   }
 
   componentDidMount () {
-    this.triggerBoundingRect = getAbsoluteBoundingRect(this.triggerRef.current);
+    this.setState({ triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current) });
   }
 
   componentDidUpdate () {
+    if (this.controlled) {
+      return;
+    }
+
     if (this.state.open) {
       this.props.closeOnEscape && document.addEventListener('keyup', this.handleEscape);
       this.props.closeOnClickOutside && document.addEventListener('click', this.handleClickOutside);
@@ -103,12 +105,20 @@ export default class Dropdown extends Component {
   }
 
   handleTriggerClick (e) {
+    if (this.controlled) {
+      return;
+    }
+
     this.setState((prevState) => {
       return { open: !prevState.open };
     })
   }
 
   handleTriggerKeyDown (e) {
+    if (this.controlled) {
+      return;
+    }
+
     if (e.key === 'ArrowDown') {
       this.openMenu();
 
@@ -118,11 +128,12 @@ export default class Dropdown extends Component {
 
   handleOptionClick(val) {
     this.props.onClick(val);
-    this.props.closeOnOptionClick && this.closeMenu(true);
+    !this.controlled && this.props.closeOnOptionClick && this.closeMenu(true);
   }
 
   render () {
     const Trigger = this.props.triggerComponent;
+    const open = this.controlled ? this.props.open : this.state.open;
     const classes = 'react-16-dropdown' +
       (this.props.className ? ` ${this.props.className}` : '');
 
@@ -140,11 +151,11 @@ export default class Dropdown extends Component {
           onKeyDown={this.handleTriggerKeyDown}
         />
         
-        {this.state.open &&
+        {open && this.state.triggerBoundingRect &&
           <Menu
             {...this.props}
             menuRef={this.menuRef}
-            triggerBoundingRect={this.triggerBoundingRect}
+            triggerBoundingRect={this.state.triggerBoundingRect}
             onClick={this.handleOptionClick}
           />
         }
