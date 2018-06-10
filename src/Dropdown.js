@@ -16,17 +16,31 @@ function getAbsoluteBoundingRect (el) {
   return rect;
 }
 
-function DefaultTrigger (props) {
+function DefaultTriggerRenderer (props) {
   return (
-    <button
+    <button disabled={props.disabled}>
+      {props.label}
+    </button>
+  );
+}
+
+function DefaultTriggerComponent (props) {
+  const TriggerRenderer = props.renderer;
+
+  return (
+    <div
+      className='trigger'
       disabled={props.disabled}
       ref={props.triggerRef}
       onClick={props.onClick}
       onKeyDown={props.onKeyDown}
       onKeyUp={props.onKeyUp}
     >
-      Click me!
-    </button>
+      <TriggerRenderer
+        disabled={props.disabled}
+        label={props.label}
+      />
+    </div>
   );
 }
 
@@ -119,6 +133,8 @@ export default class Dropdown extends Component {
       >
         <Trigger
           disabled={this.props.disabled}
+          label={this.props.triggerLabel}
+          renderer={this.props.triggerRenderer}
           triggerRef={this.triggerRef}
           onClick={this.handleTriggerClick}
           onKeyDown={this.handleTriggerKeyDown}
@@ -138,7 +154,9 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.defaultProps = {
-  triggerComponent: DefaultTrigger,
+  triggerComponent: DefaultTriggerComponent,
+  triggerRenderer: DefaultTriggerRenderer,
+  triggerLabel: 'Open menu',
   closeOnEscape: true,
   closeOnClickOutside: true,
   closeOnOptionClick: false,

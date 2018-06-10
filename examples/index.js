@@ -20,7 +20,6 @@ function App () {
     }
   ];
 
-  // buttonRenderer
   // menuRenderer
   // optionRenderer
   return (

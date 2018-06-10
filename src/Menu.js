@@ -9,7 +9,6 @@ function DefaultMenu (props) {
       ref={props.menuRef}
       tabIndex={-1}
       style={props.style}
-      onKeyUp={props.onKeyUp}
       onKeyDown={props.onKeyDown}
     >
       {props.children}
@@ -45,7 +44,7 @@ class DefaultOption extends React.PureComponent {
       >
         {this.props.label}
       </div>
-  );
+    );
   }
 }
 

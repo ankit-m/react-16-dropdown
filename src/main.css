@@ -3,8 +3,9 @@ body {
   width: 2000px;
 }
 
-button {
+.trigger {
   margin-left: 250px;
+  display: inline-block;
 }
 
 .menu {
