@@ -20,8 +20,6 @@ function App () {
     }
   ];
 
-  // menuRenderer
-  // optionRenderer
   return (
     <Fragment>
       <Dropdown

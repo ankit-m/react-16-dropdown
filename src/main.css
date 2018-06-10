@@ -22,13 +22,13 @@ body {
   outline: none
 }
 
-.item {
+.option {
   height: 24px;
   padding: 8px 16px;
 }
 
-.item.focused,
-.item:hover {
+.option.focused,
+.option:hover {
   background: #f0f0f0;
   cursor: pointer;
 }

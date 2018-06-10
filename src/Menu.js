@@ -1,22 +1,36 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-function DefaultMenu (props) {
+function DefaultMenuRenderer (props) {
+  return props.children;
+}
+
+function DefaultMenuComponent (props) {
+  const MenuRenderer = props.renderer;
+
   return (
     <div
-      role='listbox'
       className='menu'
+      role='listbox'
       ref={props.menuRef}
       tabIndex={-1}
       style={props.style}
       onKeyDown={props.onKeyDown}
     >
-      {props.children}
+      <MenuRenderer>{props.children}</MenuRenderer>
     </div>
   );
 }
 
-class DefaultOption extends React.PureComponent {
+function DefaultOptionRenderer (props) {
+  return (
+    <div className={props.className}>
+      {props.label}
+    </div>
+  );
+}
+
+class DefaultOptionComponent extends React.PureComponent {
   constructor (props) {
     super(props);
 
@@ -30,19 +44,23 @@ class DefaultOption extends React.PureComponent {
   }
 
   render () {
-    const classes = 'item' +
+    const OptionRenderer = this.props.renderer;
+
+    const classes = 'option' +
       (this.props.focused ? ' focused': '') +
       (this.props.className ? ` ${this.props.className}` : '');
 
     return (
       <div
         role='option'
-        className={classes}
         tabIndex={-1}
         ref={this.optionRef}
         onClick={this.props.onClick}
       >
-        {this.props.label}
+        <OptionRenderer
+          className={classes}
+          label={this.props.label}
+        />
       </div>
     );
   }
@@ -122,12 +140,12 @@ export default class Menu extends Component {
   render () {
     const Option = this.props.optionComponent;
     const Menu = this.props.menuComponent;
-    const styles = this.getAlignment();
 
     const menu = (
       <Menu
         menuRef={this.props.menuRef}
-        style={styles}
+        renderer={this.props.menuRenderer}
+        style={this.getAlignment()}
         onKeyDown={this.handleKeyDown}
       >
         {this.props.options.map((option, i) => {
@@ -137,6 +155,7 @@ export default class Menu extends Component {
               focused={this.state.focused === i}
               key={option.value}
               label={option.label}
+              renderer={this.props.optionRenderer}
               onClick={() => { this.props.onClick(option.value); }}
             />
           );
@@ -149,6 +168,8 @@ export default class Menu extends Component {
 }
 
 Menu.defaultProps = {
-  menuComponent: DefaultMenu,
-  optionComponent: DefaultOption
+  menuComponent: DefaultMenuComponent,
+  optionComponent: DefaultOptionComponent,
+  optionRenderer: DefaultOptionRenderer,
+  menuRenderer: DefaultMenuRenderer
 }
