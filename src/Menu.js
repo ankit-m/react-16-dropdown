@@ -76,14 +76,16 @@ export default class Menu extends Component {
     super(props);
 
     this.state = { focused: -1 };
-    // @todo add class
+
     this.el = document.createElement('div');
+    this.el.classList.add('react-16-dropdown-portal');
+
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
   }
 
   componentDidMount () {
-    document.body.appendChild(this.el);
+    document.querySelector(this.props.menuPortalTarget).appendChild(this.el);
 
     this.props.menuRef.current.focus();
   }
@@ -171,5 +173,6 @@ Menu.defaultProps = {
   menuComponent: DefaultMenuComponent,
   optionComponent: DefaultOptionComponent,
   optionRenderer: DefaultOptionRenderer,
-  menuRenderer: DefaultMenuRenderer
+  menuRenderer: DefaultMenuRenderer,
+  menuPortalTarget: 'body'
 }
