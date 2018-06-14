@@ -1,11 +1,10 @@
-import React, { Fragment, Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 
 import Menu from './Menu';
 
-function getAbsoluteBoundingRect (el) {
-  let rect = {};
-  let clientRect = el.getBoundingClientRect();
+function getAbsoluteBoundingRect(el) {
+  const clientRect = el.getBoundingClientRect();
+  const rect = {};
 
   rect.left = window.scrollX + clientRect.left;
   rect.top = window.scrollY + clientRect.top;
@@ -16,7 +15,7 @@ function getAbsoluteBoundingRect (el) {
   return rect;
 }
 
-function DefaultTriggerRenderer (props) {
+function DefaultTriggerRenderer(props) {
   return (
     <button disabled={props.disabled}>
       {props.label}
@@ -24,7 +23,7 @@ function DefaultTriggerRenderer (props) {
   );
 }
 
-function DefaultTriggerComponent (props) {
+function DefaultTriggerComponent(props) {
   const TriggerRenderer = props.renderer;
 
   return (
@@ -32,6 +31,7 @@ function DefaultTriggerComponent (props) {
       className='trigger'
       disabled={props.disabled}
       ref={props.triggerRef}
+      role='button'
       onClick={props.onClick}
       onKeyDown={props.onKeyDown}
       onKeyUp={props.onKeyUp}
@@ -45,14 +45,14 @@ function DefaultTriggerComponent (props) {
 }
 
 export default class Dropdown extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = { open: Boolean(props.open) };
 
     this.menuRef = React.createRef();
     this.triggerRef = React.createRef();
-    this.controlled = this.props.hasOwnProperty('open');
+    this.controlled = Object.prototype.hasOwnProperty.call(this.props, 'open');
 
     this.handleTriggerClick = this.handleTriggerClick.bind(this);
     this.handleOptionClick = this.handleOptionClick.bind(this);
@@ -63,11 +63,11 @@ export default class Dropdown extends Component {
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current) });
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.controlled) {
       return;
     }
@@ -75,46 +75,43 @@ export default class Dropdown extends Component {
     if (this.state.open) {
       this.props.closeOnEscape && document.addEventListener('keyup', this.handleEscape);
       this.props.closeOnClickOutside && document.addEventListener('click', this.handleClickOutside);
-    }
-    else {
+    } else {
       this.props.closeOnEscape && document.removeEventListener('keyup', this.handleEscape);
       this.props.closeOnClickOutside && document.removeEventListener('click', this.handleClickOutside);
     }
   }
 
-  closeMenu (focus) {
+  closeMenu(focus) {
     this.setState({ open: false }, () => {
       focus && this.triggerRef.current.focus();
     });
   }
 
-  openMenu () {
+  openMenu() {
     this.setState({ open: true });
   }
 
-  handleClickOutside (e) {
+  handleClickOutside(e) {
     if (!this.menuRef.current.contains(e.target)) {
       this.closeMenu();
     }
   }
 
-  handleEscape (e) {
+  handleEscape(e) {
     if (e.key === 'Escape') {
       this.closeMenu(true);
     }
   }
 
-  handleTriggerClick (e) {
+  handleTriggerClick() {
     if (this.controlled) {
       return;
     }
 
-    this.setState((prevState) => {
-      return { open: !prevState.open };
-    })
+    this.setState(prevState => ({ open: !prevState.open }));
   }
 
-  handleTriggerKeyDown (e) {
+  handleTriggerKeyDown(e) {
     if (this.controlled) {
       return;
     }
@@ -131,7 +128,7 @@ export default class Dropdown extends Component {
     !this.controlled && this.props.closeOnOptionClick && this.closeMenu(true);
   }
 
-  render () {
+  render() {
     const Trigger = this.props.triggerComponent;
     const open = this.controlled ? this.props.open : this.state.open;
     const classes = 'react-16-dropdown' +
@@ -150,7 +147,7 @@ export default class Dropdown extends Component {
           onClick={this.handleTriggerClick}
           onKeyDown={this.handleTriggerKeyDown}
         />
-        
+
         {open && this.state.triggerBoundingRect &&
           <Menu
             {...this.props}
@@ -172,5 +169,5 @@ Dropdown.defaultProps = {
   closeOnClickOutside: true,
   closeOnOptionClick: false,
   disabled: false,
-  align: 'left'
-}
+  align: 'left',
+};
