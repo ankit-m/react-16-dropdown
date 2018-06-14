@@ -67,9 +67,13 @@ export default class Dropdown extends Component {
     this.setState({ triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current) });
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     if (this.controlled) {
       return;
+    }
+
+    if (this.state.open && !prevState.open) {
+      typeof this.props.onOpen === 'function' && this.props.onOpen();
     }
 
     if (this.state.open) {
