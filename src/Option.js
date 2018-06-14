@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-export function DefaultOptionRenderer(props) {
+export function OptionRenderer(props) {
   return (
     <div className={props.className}>
       {props.label}
@@ -8,7 +8,7 @@ export function DefaultOptionRenderer(props) {
   );
 }
 
-export default class DefaultOptionComponent extends PureComponent {
+export default class Option extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -22,7 +22,7 @@ export default class DefaultOptionComponent extends PureComponent {
   }
 
   render() {
-    const OptionRenderer = this.props.renderer;
+    const Renderer = this.props.renderer;
 
     const classes = 'option' +
       (this.props.focused ? ' focused' : '') +
@@ -36,7 +36,7 @@ export default class DefaultOptionComponent extends PureComponent {
         ref={this.optionRef}
         onClick={this.props.onClick}
       >
-        <OptionRenderer
+        <Renderer
           className={classes}
           label={this.props.label}
         />

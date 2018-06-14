@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import DefaultOptionComponent, { DefaultOptionRenderer } from './Option';
+import Option, { OptionRenderer } from './Option';
 
-function DefaultMenuRenderer(props) {
+function MenuRenderer(props) {
   return props.children;
 }
 
-function DefaultMenuComponent(props) {
-  const MenuRenderer = props.renderer;
+function Menu(props) {
+  const Renderer = props.renderer;
 
   return (
     <div
@@ -19,7 +19,7 @@ function DefaultMenuComponent(props) {
       style={props.style}
       onKeyDown={props.onKeyDown}
     >
-      <MenuRenderer>{props.children}</MenuRenderer>
+      <Renderer>{props.children}</Renderer>
     </div>
   );
 }
@@ -29,7 +29,7 @@ function DefaultMenuComponent(props) {
  *
  * @help https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets#Using_tabindex
  */
-export default class Menu extends Component {
+export default class MenuPortal extends Component {
   constructor(props) {
     super(props);
 
@@ -96,18 +96,18 @@ export default class Menu extends Component {
   }
 
   render() {
-    const Option = this.props.optionComponent;
-    const MenuComponent = this.props.menuComponent;
+    const OptionElement = this.props.optionComponent;
+    const MenuElement = this.props.menuComponent;
 
     const menu = (
-      <MenuComponent
+      <MenuElement
         menuRef={this.props.menuRef}
         renderer={this.props.menuRenderer}
         style={this.getAlignment()}
         onKeyDown={this.handleKeyDown}
       >
         {this.props.options.map((option, i) => (
-          <Option
+          <OptionElement
             className={option.className}
             focused={this.state.focused === i}
             key={option.value}
@@ -116,17 +116,17 @@ export default class Menu extends Component {
             onClick={() => { this.props.onClick(option.value); }}
           />
         ))}
-      </MenuComponent>
+      </MenuElement>
     );
 
     return ReactDOM.createPortal(menu, this.el);
   }
 }
 
-Menu.defaultProps = {
-  menuComponent: DefaultMenuComponent,
-  optionComponent: DefaultOptionComponent,
-  optionRenderer: DefaultOptionRenderer,
-  menuRenderer: DefaultMenuRenderer,
+MenuPortal.defaultProps = {
+  menuComponent: Menu,
+  optionComponent: Option,
+  optionRenderer: OptionRenderer,
+  menuRenderer: MenuRenderer,
   menuPortalTarget: 'body',
 };

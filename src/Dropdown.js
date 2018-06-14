@@ -15,7 +15,7 @@ function getAbsoluteBoundingRect(el) {
   return rect;
 }
 
-function DefaultTriggerRenderer(props) {
+function TriggerRenderer(props) {
   return (
     <button disabled={props.disabled}>
       {props.label}
@@ -23,8 +23,8 @@ function DefaultTriggerRenderer(props) {
   );
 }
 
-function DefaultTriggerComponent(props) {
-  const TriggerRenderer = props.renderer;
+function Trigger(props) {
+  const Renderer = props.renderer;
 
   return (
     <div
@@ -36,7 +36,7 @@ function DefaultTriggerComponent(props) {
       onKeyDown={props.onKeyDown}
       onKeyUp={props.onKeyUp}
     >
-      <TriggerRenderer
+      <Renderer
         disabled={props.disabled}
         label={props.label}
       />
@@ -129,7 +129,7 @@ export default class Dropdown extends Component {
   }
 
   render() {
-    const Trigger = this.props.triggerComponent;
+    const TriggerElement = this.props.triggerComponent;
     const open = this.controlled ? this.props.open : this.state.open;
     const classes = 'react-16-dropdown' +
       (this.props.className ? ` ${this.props.className}` : '');
@@ -139,7 +139,7 @@ export default class Dropdown extends Component {
         className={classes}
         id={this.props.id}
       >
-        <Trigger
+        <TriggerElement
           disabled={this.props.disabled}
           label={this.props.triggerLabel}
           renderer={this.props.triggerRenderer}
@@ -162,8 +162,8 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.defaultProps = {
-  triggerComponent: DefaultTriggerComponent,
-  triggerRenderer: DefaultTriggerRenderer,
+  triggerComponent: Trigger,
+  triggerRenderer: TriggerRenderer,
   triggerLabel: 'Open menu',
   closeOnEscape: true,
   closeOnClickOutside: true,
