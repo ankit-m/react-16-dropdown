@@ -109,6 +109,8 @@ export default class Dropdown extends Component {
 
   handleTriggerClick() {
     if (this.controlled) {
+      typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
+
       return;
     }
 
@@ -117,6 +119,8 @@ export default class Dropdown extends Component {
 
   handleTriggerKeyDown(e) {
     if (this.controlled) {
+      typeof this.props.onTriggerKeyDown === 'function' && this.props.onTriggerKeyDown();
+
       return;
     }
 
