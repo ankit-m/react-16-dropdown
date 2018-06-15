@@ -5,7 +5,10 @@ import { getAbsoluteBoundingRect, optimizedResize } from './utils';
 
 function TriggerRenderer(props) {
   return (
-    <button disabled={props.disabled}>
+    <button
+      className='trigger-renderer'
+      disabled={props.disabled}
+    >
       {props.label}
     </button>
   );

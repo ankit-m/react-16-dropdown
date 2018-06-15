@@ -1,11 +1,19 @@
-body {
-  height: 1000px;
-  width: 2000px;
+.react-16-dropdown,
+.trigger {
+  display: inline-block;
 }
 
-.trigger {
-  margin-left: 250px;
-  display: inline-block;
+.trigger-renderer {
+  border-radius: 3px;
+  line-height: 1.5;
+  padding: .375rem .75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  border: 1px solid #dcdcdc;
+}
+
+.trigger-renderer:hover {
+  background: #f0f0f0;
 }
 
 .menu {
@@ -16,6 +24,7 @@ body {
   margin-top: 8px;
   min-width: 300px;
   max-width: 420px;
+  box-shadow : 0 0 10px -5px #000000;
 }
 
 .menu:focus {
@@ -23,7 +32,7 @@ body {
 }
 
 .option {
-  height: 24px;
+  min-height: 24px;
   padding: 8px 16px;
 }
 

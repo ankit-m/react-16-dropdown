@@ -113,6 +113,7 @@ export default class MenuPortal extends Component {
             key={option.value}
             label={option.label}
             renderer={this.props.optionRenderer}
+            value={option.value}
             onClick={() => { this.props.onClick(option.value); }}
           />
         ))}

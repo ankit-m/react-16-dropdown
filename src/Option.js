@@ -39,6 +39,7 @@ export default class Option extends PureComponent {
         <Renderer
           className={classes}
           label={this.props.label}
+          value={this.props.value}
         />
       </div>
     );
