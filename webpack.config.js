@@ -1,12 +1,13 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const TARGET = process.env.npm_lifecycle_event;
 
 const devConfig = {
   devtool: 'eval-source-map',
   entry: {
-    main: './examples/index.js'
+    main: './examples/js/index.js'
   },
   output: {
     filename: './dist/[name].js'
