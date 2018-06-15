@@ -132,7 +132,8 @@ export default class Dropdown extends Component {
   }
 
   handleOptionClick(val) {
-    this.props.onClick(val);
+    typeof this.props.onClick === 'function' && this.props.onClick(val);
+
     !this.controlled && this.props.closeOnOptionClick && this.closeMenu(true);
   }
 
