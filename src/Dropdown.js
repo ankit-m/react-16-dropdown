@@ -1,19 +1,7 @@
 import React, { Component } from 'react';
 
 import Menu from './Menu';
-
-function getAbsoluteBoundingRect(el) {
-  const clientRect = el.getBoundingClientRect();
-  const rect = {};
-
-  rect.left = window.scrollX + clientRect.left;
-  rect.top = window.scrollY + clientRect.top;
-  rect.right = clientRect.right;
-  rect.bottom = clientRect.bottom;
-  rect.height = clientRect.height;
-
-  return rect;
-}
+import { getAbsoluteBoundingRect, optimizedResize } from './utils';
 
 function TriggerRenderer(props) {
   return (
@@ -61,10 +49,13 @@ export default class Dropdown extends Component {
     this.closeMenu = this.closeMenu.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.setTriggerRect = this.setTriggerRect.bind(this);
   }
 
   componentDidMount() {
-    this.setState({ triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current) });
+    this.setTriggerRect();
+
+    optimizedResize.add(this.setTriggerRect);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -83,6 +74,12 @@ export default class Dropdown extends Component {
       this.props.closeOnEscape && document.removeEventListener('keyup', this.handleEscape);
       this.props.closeOnClickOutside && document.removeEventListener('click', this.handleClickOutside);
     }
+  }
+
+  setTriggerRect() {
+    this.setState({
+      triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current),
+    });
   }
 
   closeMenu(focus) {
