@@ -110,12 +110,11 @@ export default class MenuPortal extends Component {
         {this.props.options.map((option, i) => (
           <OptionElement
             className={option.className}
+            data={option}
             focused={this.state.focused === i}
             key={option.value}
-            label={option.label}
             renderer={this.props.optionRenderer}
-            value={option.value}
-            onClick={() => { this.props.onClick(option.value); }}
+            onClick={() => { this.props.onClick(option); }}
           />
         ))}
       </MenuElement>

@@ -23,7 +23,6 @@ export default class Option extends PureComponent {
 
   render() {
     const Renderer = this.props.renderer;
-
     const classes = 'option' +
       (this.props.focused ? ' focused' : '') +
       (this.props.className ? ` ${this.props.className}` : '');
@@ -37,9 +36,8 @@ export default class Option extends PureComponent {
         onClick={this.props.onClick}
       >
         <Renderer
+          {...this.props.data}
           className={classes}
-          label={this.props.label}
-          value={this.props.value}
         />
       </div>
     );

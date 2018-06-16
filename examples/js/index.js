@@ -242,7 +242,7 @@ function Customization() {
                 ref={props.optionRef}
                 onClick={props.onClick}
               >
-                {props.label}
+                {props.data.label}
               </div>
             )}
             onClick={e => console.log(e)}
