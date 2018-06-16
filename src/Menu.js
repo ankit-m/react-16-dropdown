@@ -37,6 +37,7 @@ export default class MenuPortal extends Component {
 
     this.el = document.createElement('div');
     this.el.classList.add('react-16-dropdown-portal');
+    this.props.portalClassName && this.el.classList.add(this.props.portalClassName);
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
