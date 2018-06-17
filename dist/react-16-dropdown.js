@@ -102,7 +102,11 @@ var _Menu = __webpack_require__(2);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _utils = __webpack_require__(5);
+var _Trigger = __webpack_require__(5);
+
+var _Trigger2 = _interopRequireDefault(_Trigger);
+
+var _utils = __webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -111,38 +115,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function TriggerRenderer(props) {
-  return _react2.default.createElement(
-    'button',
-    {
-      className: 'trigger-renderer',
-      disabled: props.disabled
-    },
-    props.label
-  );
-}
-
-function Trigger(props) {
-  var Renderer = props.renderer;
-
-  return _react2.default.createElement(
-    'div',
-    {
-      className: 'trigger',
-      disabled: props.disabled,
-      ref: props.triggerRef,
-      role: 'button',
-      onClick: props.onClick,
-      onKeyDown: props.onKeyDown,
-      onKeyUp: props.onKeyUp
-    },
-    _react2.default.createElement(Renderer, {
-      disabled: props.disabled,
-      label: props.label
-    })
-  );
-}
 
 var Dropdown = function (_Component) {
   _inherits(Dropdown, _Component);
@@ -234,6 +206,8 @@ var Dropdown = function (_Component) {
     key: 'handleTriggerClick',
     value: function handleTriggerClick() {
       if (this.controlled) {
+        typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
+
         return;
       }
 
@@ -245,6 +219,8 @@ var Dropdown = function (_Component) {
     key: 'handleTriggerKeyDown',
     value: function handleTriggerKeyDown(e) {
       if (this.controlled) {
+        typeof this.props.onTriggerKeyDown === 'function' && this.props.onTriggerKeyDown();
+
         return;
       }
 
@@ -257,7 +233,8 @@ var Dropdown = function (_Component) {
   }, {
     key: 'handleOptionClick',
     value: function handleOptionClick(val) {
-      this.props.onClick(val);
+      typeof this.props.onClick === 'function' && this.props.onClick(val);
+
       !this.controlled && this.props.closeOnOptionClick && this.closeMenu(true);
     }
   }, {
@@ -297,8 +274,8 @@ exports.default = Dropdown;
 
 
 Dropdown.defaultProps = {
-  triggerComponent: Trigger,
-  triggerRenderer: TriggerRenderer,
+  triggerComponent: _Trigger2.default,
+  triggerRenderer: _Trigger.TriggerRenderer,
   triggerLabel: 'Open menu',
   closeOnEscape: true,
   closeOnClickOutside: true,
@@ -383,6 +360,7 @@ var MenuPortal = function (_Component) {
 
     _this.el = document.createElement('div');
     _this.el.classList.add('react-16-dropdown-portal');
+    _this.props.portalClassName && _this.el.classList.add(_this.props.portalClassName);
 
     _this.handleKeyDown = _this.handleKeyDown.bind(_this);
     _this.getAlignment = _this.getAlignment.bind(_this);
@@ -470,13 +448,12 @@ var MenuPortal = function (_Component) {
         this.props.options.map(function (option, i) {
           return _react2.default.createElement(OptionElement, {
             className: option.className,
+            data: option,
             focused: _this2.state.focused === i,
             key: option.value,
-            label: option.label,
             renderer: _this2.props.optionRenderer,
-            value: option.value,
             onClick: function onClick() {
-              _this2.props.onClick(option.value);
+              _this2.props.onClick(option);
             }
           });
         })
@@ -516,6 +493,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -564,7 +543,6 @@ var Option = function (_PureComponent) {
     key: 'render',
     value: function render() {
       var Renderer = this.props.renderer;
-
       var classes = 'option' + (this.props.focused ? ' focused' : '') + (this.props.className ? ' ' + this.props.className : '');
 
       return _react2.default.createElement(
@@ -576,11 +554,9 @@ var Option = function (_PureComponent) {
           ref: this.optionRef,
           onClick: this.props.onClick
         },
-        _react2.default.createElement(Renderer, {
-          className: classes,
-          label: this.props.label,
-          value: this.props.value
-        })
+        _react2.default.createElement(Renderer, _extends({}, this.props.data, {
+          className: classes
+        }))
       );
     }
   }]);
@@ -592,6 +568,57 @@ exports.default = Option;
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TriggerRenderer = TriggerRenderer;
+exports.default = Trigger;
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function TriggerRenderer(props) {
+  return _react2.default.createElement(
+    'button',
+    {
+      className: 'trigger-renderer',
+      disabled: props.disabled
+    },
+    props.label
+  );
+}
+
+function Trigger(props) {
+  var Renderer = props.renderer;
+
+  return _react2.default.createElement(
+    'div',
+    {
+      className: 'trigger',
+      disabled: props.disabled,
+      ref: props.triggerRef,
+      role: 'button',
+      onClick: props.onClick,
+      onKeyDown: props.onKeyDown,
+      onKeyUp: props.onKeyUp
+    },
+    _react2.default.createElement(Renderer, {
+      disabled: props.disabled,
+      label: props.label
+    })
+  );
+}
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
