@@ -10,7 +10,8 @@ const docConfig = {
     main: './examples/js/index.js',
   },
   output: {
-    filename: './docs/[name].js',
+    path: path.resolve(__dirname, 'docs'),
+    filename: '[name].[hash].js',
   },
   module: {
     loaders: [
@@ -68,7 +69,8 @@ if (TARGET === 'build-docs') {
   docConfig.plugins = [
     new HtmlWebpackPlugin({
       template: './examples/index.html',
-      filename: './docs/index.html',
+      filename: 'index.html',
+      hash: true,
     }),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
