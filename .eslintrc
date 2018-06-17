@@ -12,6 +12,7 @@
     "jsx-a11y/interactive-supports-focus": "off",
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "react/no-did-mount-set-state": "off",
-    "func-names": "off"
+    "func-names": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }

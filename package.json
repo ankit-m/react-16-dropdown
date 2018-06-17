@@ -1,7 +1,7 @@
 {
   "name": "react-16-dropdown",
   "version": "0.1.0-alpha.2",
-  "description": "",
+  "description": "A zero-dependency, lightweight and fully customizable dropdown (not select) for React.",
   "main": "dist/react-16-dropdown.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,9 +10,19 @@
     "build": "webpack",
     "build-docs": "NODE_ENV=production webpack"
   },
-  "author": "",
+  "author": "muchhalaankit@gmail.com",
+  "homepage": "https://github.com/ankit-m/react-16-dropdown",
+  "bugs": {
+    "url": "https://github.com/ankit-m/react-16-dropdown/issues",
+    "email": "muchhalaankit@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankit-m/react-16-dropdown.git"
+  },
+  "keywords": ["react", "dropdown"],
   "license": "ISC",
-  "dependencies": {
+  "peerDependencies": {
     "react": "16.4.0",
     "react-dom": "16.4.0"
   },
