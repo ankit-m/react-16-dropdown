@@ -12,7 +12,7 @@ export function TriggerRenderer(props) {
 }
 
 export default function Trigger(props) {
-  const Renderer = props.renderer;
+  const Renderer = props.renderer || TriggerRenderer;
 
   return (
     <div

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Menu from './Menu';
-import Trigger, { TriggerRenderer } from './Trigger';
+import Trigger from './Trigger';
 import { getAbsoluteBoundingRect, optimizedResize } from './utils';
 
 export default class Dropdown extends Component {
@@ -22,10 +22,13 @@ export default class Dropdown extends Component {
     this.openMenu = this.openMenu.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.setTriggerRect = this.setTriggerRect.bind(this);
+    this.focusTrigger = this.focusTrigger.bind(this);
   }
 
   componentDidMount() {
     this.setTriggerRect();
+
+    this.props.autoFocus && this.focusTrigger();
 
     optimizedResize.add(this.setTriggerRect);
   }
@@ -54,9 +57,18 @@ export default class Dropdown extends Component {
     });
   }
 
+  // focus the custom component passed or renderer
+  focusTrigger() {
+    if (this.props.triggerComponent) {
+      this.triggerRef.current.focus();
+    } else {
+      this.triggerRef.current.firstChild.focus();
+    }
+  }
+
   closeMenu(focus) {
     this.setState({ open: false }, () => {
-      focus && this.triggerRef.current.focus();
+      focus && this.focusTrigger();
     });
   }
 
@@ -107,7 +119,7 @@ export default class Dropdown extends Component {
   }
 
   render() {
-    const TriggerElement = this.props.triggerComponent;
+    const TriggerElement = this.props.triggerComponent || Trigger;
     const open = this.controlled ? this.props.open : this.state.open;
     const classes = 'react-16-dropdown' +
       (this.props.className ? ` ${this.props.className}` : '');
@@ -140,8 +152,7 @@ export default class Dropdown extends Component {
 }
 
 Dropdown.defaultProps = {
-  triggerComponent: Trigger,
-  triggerRenderer: TriggerRenderer,
+  autoFocus: false,
   triggerLabel: 'Open menu',
   closeOnEscape: true,
   closeOnClickOutside: true,

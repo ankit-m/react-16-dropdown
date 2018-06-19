@@ -39,6 +39,7 @@ export default function BasicUsage() {
         </p>
         <div className='my-4'>
           <Dropdown
+            autoFocus
             align='left'
             className='custom-classname'
             closeOnEscape
