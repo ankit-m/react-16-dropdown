@@ -77,9 +77,9 @@ export default class Dropdown extends Component {
   }
 
   handleTriggerClick() {
-    if (this.controlled) {
-      typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
+    typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
 
+    if (this.controlled) {
       return;
     }
 
@@ -87,9 +87,9 @@ export default class Dropdown extends Component {
   }
 
   handleTriggerKeyDown(e) {
-    if (this.controlled) {
-      typeof this.props.onTriggerKeyDown === 'function' && this.props.onTriggerKeyDown();
+    typeof this.props.onTriggerKeyDown === 'function' && this.props.onTriggerKeyDown();
 
+    if (this.controlled) {
       return;
     }
 

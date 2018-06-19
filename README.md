@@ -52,6 +52,7 @@ You can pass the following props to the `Dropdown` component -
 |onOpen|`undefined`|`Function`|Function to be called when menu opens|
 |onClose|`undefined`|`Function`|Function to be called when menu closes|
 |onTriggerClick|`undefined`|`Function`|Function to be called when the trigger element is clicked|
+|onTriggerKeyDown|`undefined`|`Function`|Function to be called when a key is pressed on the trigger|
 |menuPortalTarget|`body`|`String`|Selector for the portal to be attached as a child to|
 |menuRenderer|`MenuRenderer`⁽¹⁾|`ReactElement`|Component to render the menu|
 |triggerRenderer|`TriggerRenderer`⁽¹⁾|`ReactElement`|Component to render the trigger|
