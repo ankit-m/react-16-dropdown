@@ -8,6 +8,7 @@
   line-height: 1.5;
   padding: .375rem .75rem;
   cursor: pointer;
+  background: #ffffff;
   font-size: 1rem;
   border: 1px solid #dcdcdc;
 }
