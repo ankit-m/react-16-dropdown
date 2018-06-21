@@ -29,7 +29,7 @@
 }
 
 .menu:focus {
-  outline: none
+  /* outline: none */
 }
 
 .option {
@@ -41,4 +41,8 @@
 .option:hover {
   background: #f0f0f0;
   cursor: pointer;
+}
+
+.option:focus {
+  border: 10px solid pink;
 }

@@ -141,6 +141,7 @@ export default class Dropdown extends Component {
         {open && this.state.triggerBoundingRect &&
           <Menu
             {...this.props}
+            controlled={this.controlled}
             menuRef={this.menuRef}
             triggerBoundingRect={this.state.triggerBoundingRect}
             onClick={this.handleOptionClick}

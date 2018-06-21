@@ -35,18 +35,30 @@ export default class MenuPortal extends Component {
 
     this.state = { focused: -1 };
 
+    this.optionRefs = {};
     this.el = document.createElement('div');
     this.el.classList.add('react-16-dropdown-portal');
-    this.props.portalClassName && this.el.classList.add(this.props.portalClassName);
+    props.portalClassName && this.el.classList.add(props.portalClassName);
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
+    this.setOptionRefs = this.setOptionRefs.bind(this);
   }
 
   componentDidMount() {
     document.querySelector(this.props.menuPortalTarget).appendChild(this.el);
 
-    this.props.menuRef.current.focus();
+    this.props.controlled && this.props.focused && this.optionRefs[this.props.focused].focus();
+
+    if (!this.props.controlled || this.props.autoFocusMenu) {
+      this.props.menuRef.current.focus();
+    }
+  }
+
+  componentDidUpdate() {
+    const selected = this.props.options[this.state.focused];
+
+    selected && this.optionRefs[selected.value].focus();
   }
 
   componentWillUnmount() {
@@ -75,7 +87,17 @@ export default class MenuPortal extends Component {
     return {};
   }
 
+  setOptionRefs(node, key) {
+    node && (this.optionRefs[key] = node);
+  }
+
   handleKeyDown(e) {
+    typeof this.props.onMenuKeyDown === 'function' && this.props.onMenuKeyDown(e);
+
+    if (this.props.controlled) {
+      return;
+    }
+
     const { options } = this.props;
     const maxFocus = options.length - 1;
 
@@ -93,12 +115,15 @@ export default class MenuPortal extends Component {
       }));
     }
 
-    return e.preventDefault();
+    e.preventDefault();
   }
 
   render() {
     const OptionElement = this.props.optionComponent;
     const MenuElement = this.props.menuComponent;
+    const focused = this.props.controlled ?
+      this.props.options.map(o => o.value).indexOf(this.props.focused) :
+      this.state.focused;
 
     const menu = (
       <MenuElement
@@ -111,8 +136,9 @@ export default class MenuPortal extends Component {
           <OptionElement
             className={option.className}
             data={option}
-            focused={this.state.focused === i}
+            focused={focused === i}
             key={option.value}
+            optionRef={node => this.setOptionRefs(node, option.value)}
             renderer={this.props.optionRenderer}
             onClick={() => { this.props.onClick(option); }}
           />

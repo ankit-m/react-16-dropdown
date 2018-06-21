@@ -27,7 +27,10 @@ export default function Controlled() {
             className='mb-5'
             options={fruitOptions}
             triggerLabel='Controlled fruits dropdown 🍓'
-            onClick={(e) => { console.log(e); }}
+            onTriggerClick={() => console.log('trigger click')}
+            onTriggerKeyDown={() => console.log('trigger keydown')}
+            onMenuKeyDown={() => console.log('menu keydown')}
+            onClick={(e) => { console.log('option click', e); }}
           />
           <br />
           <br />
