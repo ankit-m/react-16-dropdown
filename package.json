@@ -4,7 +4,7 @@
   "description": "A zero-dependency, lightweight and fully customizable dropdown (not select) for React.",
   "main": "dist/react-16-dropdown.js",
   "scripts": {
-    "test": "nyc mocha test/*.spec.js*",
+    "test": "nyc mocha test/specs/*.js*",
     "test-lint": "eslint src",
     "start": "webpack-dev-server",
     "build": "webpack",
