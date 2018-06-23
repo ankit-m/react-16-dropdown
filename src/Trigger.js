@@ -17,7 +17,6 @@ export default function Trigger(props) {
   return (
     <div
       className='trigger'
-      disabled={props.disabled}
       ref={props.triggerRef}
       role='button'
       onClick={props.onClick}
