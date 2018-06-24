@@ -21,7 +21,6 @@ export default function Trigger(props) {
       role='button'
       onClick={props.onClick}
       onKeyDown={props.onKeyDown}
-      onKeyUp={props.onKeyUp}
     >
       <Renderer
         disabled={props.disabled}
