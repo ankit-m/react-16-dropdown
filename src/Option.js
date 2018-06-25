@@ -1,8 +1,12 @@
 import React, { PureComponent } from 'react';
 
 export function OptionRenderer(props) {
+  const classes = 'option' +
+      (props.focused ? ' focused' : '') +
+      (props.className ? ` ${props.className}` : '');
+
   return (
-    <div className={props.className}>
+    <div className={classes}>
       {props.label}
     </div>
   );
@@ -23,9 +27,6 @@ export default class Option extends PureComponent {
 
   render() {
     const Renderer = this.props.renderer;
-    const classes = 'option' +
-      (this.props.focused ? ' focused' : '') +
-      (this.props.className ? ` ${this.props.className}` : '');
 
     return (
       <div
@@ -37,7 +38,8 @@ export default class Option extends PureComponent {
       >
         <Renderer
           {...this.props.data}
-          className={classes}
+          className={this.props.className}
+          focused={this.props.focused}
         />
       </div>
     );
