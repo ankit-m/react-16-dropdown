@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 export function OptionRenderer(props) {
   const classes = 'option' +
@@ -12,37 +12,22 @@ export function OptionRenderer(props) {
   );
 }
 
-export default class Option extends PureComponent {
-  constructor(props) {
-    super(props);
+export default function Option(props) {
+  const Renderer = props.renderer;
 
-    this.optionRef = React.createRef();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.focused !== prevProps.focused && this.props.focused) {
-      this.optionRef.current.focus();
-    }
-  }
-
-  render() {
-    const Renderer = this.props.renderer;
-
-    return (
-      <div
-        aria-selected={this.props.focused}
-        role='option'
-        tabIndex={-1}
-        ref={this.optionRef}
-        onClick={this.props.onClick}
-      >
-        <Renderer
-          {...this.props.data}
-          className={this.props.className}
-          focused={this.props.focused}
-        />
-      </div>
-    );
-  }
+  return (
+    <div
+      aria-selected={props.focused}
+      role='option'
+      tabIndex={-1}
+      ref={props.optionRef}
+      onClick={props.onClick}
+    >
+      <Renderer
+        {...props.data}
+        className={props.className}
+        focused={props.focused}
+      />
+    </div>
+  );
 }
-
