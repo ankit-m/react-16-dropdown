@@ -56,9 +56,17 @@ export default class MenuPortal extends Component {
   }
 
   componentDidUpdate() {
-    const selected = this.props.options[this.state.focused];
+    let key;
 
-    selected && this.optionRefs[selected.value].focus();
+    if (this.props.controlled) {
+      const selected = this.props.options[this.state.focused];
+
+      key = selected && selected.value;
+    } else {
+      key = this.props.focused;
+    }
+
+    key && this.optionRefs[key].focus();
   }
 
   componentWillUnmount() {
