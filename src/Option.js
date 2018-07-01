@@ -31,3 +31,8 @@ export default function Option(props) {
     </div>
   );
 }
+
+Option.defaultProps = {
+  renderer: OptionRenderer,
+  data: {},
+};

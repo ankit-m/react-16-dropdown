@@ -161,7 +161,6 @@ export default class MenuPortal extends Component {
 MenuPortal.defaultProps = {
   menuComponent: Menu,
   optionComponent: Option,
-  optionRenderer: OptionRenderer,
   menuRenderer: MenuRenderer,
   menuPortalTarget: 'body',
 };
