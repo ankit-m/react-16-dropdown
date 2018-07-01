@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import Option, { OptionRenderer } from './Option';
+import Option from './Option';
 
 function MenuRenderer(props) {
   return props.children;
