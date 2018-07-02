@@ -39,27 +39,30 @@ You can pass the following props to the `Dropdown` component -
 |Name|Default|Allowed values|Description|
 |----|------|------|---|
 |align|left|left, right|Decides the alignment of the menu w.r.t trigger|
+|autoFocus|`false`|`Boolean`|Should the trigger be focused by default|
 |className|''|`String`|Adds the given class to the wrapper element|
-|portalClassName|''|`String`|Adds the given class to portal component|
-|options*|`undefined`|`Array`|An array of objects|
-|open|`undefined`|`Boolean`|Prop to control open/closed state of the menu|
-|triggerLabel|Open menu|`String`|Text for the default trigger button|
-|onClick*|`undefined`|`Function`|Handler for option click event|
-|disabled|`false`|`Boolean`|Disable the trigger|
-|closeOnEscape|`true`|`Boolean`|Should the dropdown menu close on pressing Escape|
 |closeOnClickOutside|`true`|`Boolean`|Should the dropdown menu close on clicking outside the menu|
+|closeOnEscape|`true`|`Boolean`|Should the dropdown menu close on pressing Escape|
 |closeOnOptionClick|`true`|`Boolean`|Should the dropdown close when option is clicked|
-|onOpen|`undefined`|`Function`|Function to be called when menu opens|
-|onClose|`undefined`|`Function`|Function to be called when menu closes|
-|onTriggerClick|`undefined`|`Function`|Function to be called when the trigger element is clicked|
-|onTriggerKeyDown|`undefined`|`Function`|Function to be called when a key is pressed on the trigger|
+|disabled|`false`|`Boolean`|Disable the trigger|
+|id|`undefined`|`String`|HTML attribute id for the wrapper component|
+|menuComponent|`Menu`⁽¹⁾ ⁽²⁾|`ReactElement`|Component to replace the default menu|
 |menuPortalTarget|`body`|`String`|Selector for the portal to be attached as a child to|
 |menuRenderer|`MenuRenderer`⁽¹⁾|`ReactElement`|Component to render the menu|
-|triggerRenderer|`TriggerRenderer`⁽¹⁾|`ReactElement`|Component to render the trigger|
-|optionRenderer|`OptionRenderer`⁽¹⁾|`ReactElement`|Component to render option|
-|menuComponent|`Menu`⁽¹⁾ ⁽²⁾|`ReactElement`|Component to replace the default menu|
+|onClick*|`undefined`|`Function`|Handler for option click event|
+|onClose|`undefined`|`Function`|Function to be called when menu closes|
+|onOpen|`undefined`|`Function`|Function to be called when menu opens|
+|onMenuKeyDown|`undefined`|`Function`|Function to be called when keydown event is triggered on the menu or bubbled up from option|
+|onTriggerClick|`undefined`|`Function`|Function to be called when the trigger element is clicked|
+|onTriggerKeyDown|`undefined`|`Function`|Function to be called when a key is pressed on the trigger|
+|open|`undefined`|`Boolean`|Prop to control open/closed state of the menu|
 |optionComponent|`Option`⁽¹⁾ ⁽²⁾|`ReactElement`|Component to replace the default option|
+|optionRenderer|`OptionRenderer`⁽¹⁾|`ReactElement`|Component to render option|
+|options*|`undefined`|`Array`|An array of objects|
+|portalClassName|''|`String`|Adds the given class to portal component|
 |triggerComponent|`Trigger`⁽¹⁾ ⁽²⁾|`ReactElement`|Component to replace the default trigger|
+|triggerLabel|Open menu|`String`|Text for the default trigger button|
+|triggerRenderer|`TriggerRenderer`⁽¹⁾|`ReactElement`|Component to render the trigger|
 
 
 The `options` prop is an array of objects. Each object can have the following keys -
