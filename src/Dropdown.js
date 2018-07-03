@@ -1,118 +1,163 @@
-import React, { Fragment, Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 
-import DefaultMenu from './Menu';
+import Menu from './Menu';
+import Trigger from './Trigger';
+import { getAbsoluteBoundingRect, optimizedResize } from './utils';
 
 export default class Dropdown extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
-    this.state = {
-      open: false,
-    };
+    this.state = { open: Boolean(props.open) };
 
-    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.menuRef = React.createRef();
+    this.triggerRef = React.createRef();
+    this.controlled = Object.prototype.hasOwnProperty.call(this.props, 'open');
+
+    this.handleTriggerClick = this.handleTriggerClick.bind(this);
     this.handleOptionClick = this.handleOptionClick.bind(this);
-    this.handleButtonKeyUp = this.handleButtonKeyUp.bind(this);
+    this.handleTriggerKeyDown = this.handleTriggerKeyDown.bind(this);
     this.handleEscape = this.handleEscape.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.setMenuRef = this.setMenuRef.bind(this);
-    this.setButtonRef = this.setButtonRef.bind(this);
+    this.setTriggerRect = this.setTriggerRect.bind(this);
+    this.focusTrigger = this.focusTrigger.bind(this);
   }
 
-  componentDidUpdate () {
+  componentDidMount() {
+    this.setTriggerRect();
+
+    this.props.autoFocus && this.focusTrigger();
+
+    optimizedResize.add(this.setTriggerRect);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.controlled) {
+      return;
+    }
+
+    if (this.state.open && !prevState.open) {
+      typeof this.props.onOpen === 'function' && this.props.onOpen();
+    }
+
     if (this.state.open) {
-      document.addEventListener('keyup', this.handleEscape);
-      document.addEventListener('click', this.handleClickOutside);
-    }
-    else {
-      document.removeEventListener('keyup', this.handleEscape);
-      document.removeEventListener('click', this.handleClickOutside);
+      this.props.closeOnEscape && document.addEventListener('keyup', this.handleEscape);
+      this.props.closeOnClickOutside && document.addEventListener('click', this.handleClickOutside);
+    } else {
+      this.props.closeOnEscape && document.removeEventListener('keyup', this.handleEscape);
+      this.props.closeOnClickOutside && document.removeEventListener('click', this.handleClickOutside);
     }
   }
 
-  closeMenu (focus) {
-    this.setState({ open: false }, () => {
-      focus && this.button.focus();
+  setTriggerRect() {
+    this.setState({
+      triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current),
     });
   }
 
-  openMenu () {
+  // focus the custom component passed or renderer
+  focusTrigger() {
+    if (this.props.triggerComponent) {
+      this.triggerRef.current.focus();
+    } else {
+      this.triggerRef.current.firstChild.focus();
+    }
+  }
+
+  closeMenu(focus) {
+    this.setState({ open: false }, () => {
+      focus && this.focusTrigger();
+    });
+  }
+
+  openMenu() {
     this.setState({ open: true });
   }
 
-  handleClickOutside (e) {
-    if (!this.menu.contains(e.target)) {
+  handleClickOutside(e) {
+    if (!this.menuRef.current.contains(e.target)) {
       this.closeMenu();
     }
   }
 
-  handleEscape (e) {
+  handleEscape(e) {
     if (e.key === 'Escape') {
       this.closeMenu(true);
     }
   }
 
-  handleButtonClick (e) {
-    this.setState((prevState) => {
-      return { open: !prevState.open };
-    })
+  handleTriggerClick() {
+    typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
+
+    if (this.controlled) {
+      return;
+    }
+
+    this.setState(prevState => ({ open: !prevState.open }));
   }
 
-  handleOptionClick (val) {
-    this.props.onClick(val);
-    this.closeMenu(true);
-  }
+  handleTriggerKeyDown(e) {
+    typeof this.props.onTriggerKeyDown === 'function' && this.props.onTriggerKeyDown();
 
-  handleButtonKeyUp (e) {
+    if (this.controlled) {
+      return;
+    }
+
     if (e.key === 'ArrowDown') {
       this.openMenu();
+
+      e.preventDefault();
     }
   }
 
-  setMenuRef (node) {
-    this.menu = node;
+  handleOptionClick(val) {
+    typeof this.props.onClick === 'function' && this.props.onClick(val);
+
+    !this.controlled && this.props.closeOnOptionClick && this.closeMenu(true);
   }
 
-  setButtonRef (node) {
-    this.button = node;
-  }
-
-  render () {
-    // @todo use default refs
-    const Button = this.props.buttonRenderer || DefaultButton;
-    const Menu = this.props.menuRenderer || DefaultMenu;
+  render() {
+    const TriggerElement = this.props.triggerComponent || Trigger;
+    const open = this.controlled ? this.props.open : this.state.open;
+    const classes = 'react-16-dropdown' +
+      (this.props.className ? ` ${this.props.className}` : '');
 
     return (
-      <Fragment>
-        <Button
-          buttonRef={this.setButtonRef}
-          onClick={this.handleButtonClick}
-          onKeyUp={this.handleButtonKeyUp}
+      <div
+        className={classes}
+        id={this.props.id}
+      >
+        <TriggerElement
+          disabled={this.props.disabled}
+          label={this.props.triggerLabel}
+          renderer={this.props.triggerRenderer}
+          triggerRef={this.triggerRef}
+          onClick={this.handleTriggerClick}
+          onKeyDown={this.handleTriggerKeyDown}
         />
-        
-        {this.state.open &&
+
+        {open && this.state.triggerBoundingRect &&
           <Menu
             {...this.props}
-            menuRef={this.setMenuRef}
+            controlled={this.controlled}
+            menuRef={this.menuRef}
+            triggerBoundingRect={this.state.triggerBoundingRect}
             onClick={this.handleOptionClick}
           />
         }
-      </Fragment>
+      </div>
     );
   }
 }
 
-function DefaultButton (props) {
-  return (
-    <button
-      ref={props.buttonRef}
-      onClick={props.onClick}
-      onKeyUp={props.onKeyUp}
-    >
-      Click me!
-    </button>
-  );
-}
+Dropdown.defaultProps = {
+  autoFocus: false,
+  triggerLabel: 'Open menu',
+  closeOnEscape: true,
+  closeOnClickOutside: true,
+  closeOnOptionClick: false,
+  disabled: false,
+  align: 'left',
+};

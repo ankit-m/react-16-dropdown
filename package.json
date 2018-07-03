@@ -1,23 +1,56 @@
 {
   "name": "react-16-dropdown",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.2.0",
+  "description": "A zero-dependency, lightweight and fully customizable dropdown (not select) for React.",
+  "main": "dist/react-16-dropdown.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server"
+    "test": "nyc mocha test/specs/*.js*",
+    "test-lint": "eslint src",
+    "start": "webpack-dev-server",
+    "build": "webpack",
+    "build-docs": "NODE_ENV=production webpack"
   },
-  "author": "",
+  "author": "muchhalaankit@gmail.com",
+  "homepage": "https://github.com/ankit-m/react-16-dropdown",
+  "bugs": {
+    "url": "https://github.com/ankit-m/react-16-dropdown/issues",
+    "email": "muchhalaankit@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankit-m/react-16-dropdown.git"
+  },
+  "keywords": [
+    "react",
+    "dropdown"
+  ],
   "license": "ISC",
+  "peerDependencies": {
+    "react": "16.4.0",
+    "react-dom": "16.4.0"
+  },
   "devDependencies": {
     "babel-core": "6.26.0",
     "babel-loader": "7.1.2",
     "babel-preset-env": "1.6.1",
     "babel-preset-react": "6.24.1",
+    "babel-register": "6.26.0",
+    "chai": "4.1.2",
     "css-loader": "0.28.8",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-plugin-import": "2.12.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.9.1",
     "html-webpack-plugin": "2.30.1",
-    "react": "16.2.0",
-    "react-dom": "16.2.0",
+    "jsdom": "11.11.0",
+    "mocha": "5.2.0",
+    "nyc": "12.0.2",
+    "react": "16.4.0",
+    "react-dom": "16.4.0",
+    "sinon": "6.0.0",
     "style-loader": "0.19.1",
     "webpack": "3.10.0",
     "webpack-dev-server": "2.11.1"

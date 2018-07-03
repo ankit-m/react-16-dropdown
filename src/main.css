@@ -1,20 +1,48 @@
+.react-16-dropdown,
+.trigger {
+  display: inline-block;
+}
+
+.trigger-renderer {
+  border-radius: 3px;
+  line-height: 1.5;
+  padding: .375rem .75rem;
+  cursor: pointer;
+  background: #ffffff;
+  font-size: 1rem;
+  border: 1px solid #dcdcdc;
+}
+
+.trigger-renderer:hover {
+  background: #f0f0f0;
+}
+
 .menu {
-  border: 1px solid black;
+  position: absolute;
+  background: white;
+  border: 1px solid #dcdcdc;
   border-radius: 3px;
   margin-top: 8px;
+  min-width: 300px;
   max-width: 420px;
+  box-shadow : 0 0 10px -5px #000000;
 }
 
 .menu:focus {
-  outline: none
+  /* outline: none */
 }
 
-.item {
-  height: 24px;
+.option {
+  min-height: 24px;
   padding: 8px 16px;
 }
 
-.item.focused {
-  background: #f4f4f4;
+.option.focused,
+.option:hover {
+  background: #f0f0f0;
   cursor: pointer;
+}
+
+.option:focus {
+  border: 10px solid pink;
 }
