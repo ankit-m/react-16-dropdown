@@ -46,6 +46,7 @@ You can pass the following props to the `Dropdown` component -
 |closeOnOptionClick|`true`|`Boolean`|Should the dropdown close when option is clicked|
 |disabled|`false`|`Boolean`|Disable the trigger|
 |id|`undefined`|`String`|HTML attribute id for the wrapper component|
+|focused|`undefined`|`String`|Default focused component in controlled mode|
 |menuComponent|`Menu`⁽¹⁾ ⁽²⁾|`ReactElement`|Component to replace the default menu|
 |menuPortalTarget|`body`|`String`|Selector for the portal to be attached as a child to|
 |menuRenderer|`MenuRenderer`⁽¹⁾|`ReactElement`|Component to render the menu|
