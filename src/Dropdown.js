@@ -160,4 +160,6 @@ Dropdown.defaultProps = {
   closeOnOptionClick: false,
   disabled: false,
   align: 'left',
+  options: [],
+  sections: [],
 };
