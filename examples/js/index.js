@@ -12,6 +12,7 @@ import BasicUsage from './BasicUsage';
 import Customization from './Customization';
 import Controlled from './Controlled';
 import Features from './Features';
+import Section from './Section';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <BasicUsage />
       <Customization />
       <Controlled />
+      <Section />
     </Fragment>
   );
 }

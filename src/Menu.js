@@ -7,6 +7,17 @@ function MenuRenderer(props) {
   return props.children;
 }
 
+function MenuSection(props) {
+  return (
+    <div className='menu-section'>
+      <div className='menu-section__title'>{props.title}</div>
+      <div className='menu-section__body'>
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
 function Menu(props) {
   const Renderer = props.renderer;
 
@@ -43,6 +54,8 @@ export default class MenuPortal extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
     this.setOptionRefs = this.setOptionRefs.bind(this);
+    this.getOptions = this.getOptions.bind(this);
+    this.getOptionElements = this.getOptionElements.bind(this);
   }
 
   componentDidMount() {
@@ -56,10 +69,12 @@ export default class MenuPortal extends Component {
   }
 
   componentDidUpdate() {
+    const options = this.getOptions();
+
     let key;
 
-    if (this.props.controlled) {
-      const selected = this.props.options[this.state.focused];
+    if (!this.props.controlled) {
+      const selected = options[this.state.focused];
 
       key = selected && selected.value;
     } else {
@@ -95,6 +110,58 @@ export default class MenuPortal extends Component {
     return {};
   }
 
+  getOptions() {
+    const { options, sections } = this.props;
+
+    if (sections.length) {
+      return sections.reduce((res, sec) => res.concat(sec.options), []);
+    }
+
+    return options;
+  }
+
+  getOptionElements() {
+    const { sections } = this.props;
+    const options = this.getOptions();
+    const OptionElement = this.props.optionComponent;
+    const focused = this.props.controlled ?
+      options.map(o => o.value).indexOf(this.props.focused) :
+      this.state.focused;
+
+    if (sections.length) {
+      return sections.map((sec, i) => (
+        <MenuSection
+          key={sec.id}
+          title={sec.title}
+        >
+          {sec.options.map((option, j) => (
+            <OptionElement
+              className={option.className}
+              data={option}
+              focused={focused === (i * (i + 1)) + j}
+              key={option.value}
+              optionRef={node => this.setOptionRefs(node, option.value)}
+              renderer={this.props.optionRenderer}
+              onClick={() => { this.props.onClick(option); }}
+            />
+          ))}
+        </MenuSection>
+      ));
+    }
+
+    return options.map((option, i) => (
+      <OptionElement
+        className={option.className}
+        data={option}
+        focused={focused === i}
+        key={option.value}
+        optionRef={node => this.setOptionRefs(node, option.value)}
+        renderer={this.props.optionRenderer}
+        onClick={() => { this.props.onClick(option); }}
+      />
+    ));
+  }
+
   setOptionRefs(node, key) {
     node && (this.optionRefs[key] = node);
   }
@@ -106,7 +173,7 @@ export default class MenuPortal extends Component {
       return;
     }
 
-    const { options } = this.props;
+    const options = this.getOptions();
     const maxFocus = options.length - 1;
 
     // NOTE: This method is called when the menu is
@@ -127,11 +194,7 @@ export default class MenuPortal extends Component {
   }
 
   render() {
-    const OptionElement = this.props.optionComponent;
     const MenuElement = this.props.menuComponent;
-    const focused = this.props.controlled ?
-      this.props.options.map(o => o.value).indexOf(this.props.focused) :
-      this.state.focused;
 
     const menu = (
       <MenuElement
@@ -140,17 +203,7 @@ export default class MenuPortal extends Component {
         style={this.getAlignment()}
         onKeyDown={this.handleKeyDown}
       >
-        {this.props.options.map((option, i) => (
-          <OptionElement
-            className={option.className}
-            data={option}
-            focused={focused === i}
-            key={option.value}
-            optionRef={node => this.setOptionRefs(node, option.value)}
-            renderer={this.props.optionRenderer}
-            onClick={() => { this.props.onClick(option); }}
-          />
-        ))}
+        {this.getOptionElements()}
       </MenuElement>
     );
 
