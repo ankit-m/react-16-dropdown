@@ -85,7 +85,7 @@ export default class MenuPortal extends Component {
   }
 
   componentWillUnmount() {
-    document.body.removeChild(this.el);
+    document.querySelector(this.props.menuPortalTarget).removeChild(this.el);
   }
 
   getAlignment() {
