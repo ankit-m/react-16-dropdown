@@ -3,10 +3,25 @@ import ReactDOM from 'react-dom';
 
 import Option from './Option';
 
+/**
+ * Default menu renderer
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} props.children - Options to render
+ * @returns {ReactElement} menu
+ */
 function MenuRenderer(props) {
   return props.children;
 }
 
+/**
+ * Default component for menu section
+ *
+ * @param {Object} props - React props
+ * @param {String} props.title - Section title
+ * @param {ReactElement} props.children - Options in the section
+ * @returns {ReactElement} menu section
+ */
 function MenuSection(props) {
   return (
     <div className='menu-section'>
@@ -18,6 +33,16 @@ function MenuSection(props) {
   );
 }
 
+/**
+ * Default menu component
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} props.renderer - Menu renderer
+ * @param {ReactRef} props.menuRef - Ref for the menu component
+ * @param {Object} props.style - Inline styles for menu
+ * @param {Function} props.onKeyDown - Handler for keyboard events
+ * @param {ReactElement} props.children - Option elements
+ */
 function Menu(props) {
   const Renderer = props.renderer;
 
@@ -36,7 +61,7 @@ function Menu(props) {
 }
 
 /**
- * Managing focus
+ * Portal for the menu
  *
  * @help https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets#Using_tabindex
  */
