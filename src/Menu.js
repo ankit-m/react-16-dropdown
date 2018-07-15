@@ -22,7 +22,7 @@ function MenuRenderer(props) {
  * @param {ReactElement} props.children - Options in the section
  * @returns {ReactElement} menu section
  */
-function MenuSection(props) {
+function MenuSectionRenderer(props) {
   return (
     <div className='menu-section'>
       <div className='menu-section__title'>{props.title}</div>
@@ -149,13 +149,14 @@ export default class MenuPortal extends Component {
     const { sections } = this.props;
     const options = this.getOptions();
     const OptionElement = this.props.optionComponent;
+    const SectionRenderer = this.props.menuSectionRenderer;
     const focused = this.props.controlled ?
       options.map(o => o.value).indexOf(this.props.focused) :
       this.state.focused;
 
     if (sections.length) {
       return sections.map((sec, i) => (
-        <MenuSection
+        <SectionRenderer
           key={sec.id}
           title={sec.title}
         >
@@ -170,7 +171,7 @@ export default class MenuPortal extends Component {
               onClick={() => { this.props.onClick(option); }}
             />
           ))}
-        </MenuSection>
+        </SectionRenderer>
       ));
     }
 
@@ -240,5 +241,6 @@ MenuPortal.defaultProps = {
   menuComponent: Menu,
   optionComponent: Option,
   menuRenderer: MenuRenderer,
+  menuSectionRenderer: MenuSectionRenderer,
   menuPortalTarget: 'body',
 };
