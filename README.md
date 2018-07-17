@@ -83,7 +83,9 @@ In case you are using sections you need to pass the `sections` prop, which is an
 |----|------|---|
 |id*|`String`|Unique identifier for each section|
 |options*|`Array`|Array of options under this section|
-|title|`String`|Title for the section|
+|title|<`String`|`ReactElement`>|Title for the section|
+|className|`String`|Custom class name for section|
+|disabled|`Boolean`|Is the section disabled|
 
 ⁽¹⁾ Default internal component
 
