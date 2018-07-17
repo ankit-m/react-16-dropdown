@@ -23,8 +23,12 @@ function MenuRenderer(props) {
  * @returns {ReactElement} menu section
  */
 function MenuSectionRenderer(props) {
+  const className = 'menu-section' +
+    (props.className ? ` ${props.className}` : '') +
+    (props.disabled ? ' disabled' : '');
+
   return (
-    <div className='menu-section'>
+    <div className={className}>
       <div className='menu-section__title'>{props.title}</div>
       <div className='menu-section__body'>
         {props.children}
@@ -157,8 +161,8 @@ export default class MenuPortal extends Component {
     if (sections.length) {
       return sections.map((sec, i) => (
         <SectionRenderer
+          {...sec}
           key={sec.id}
-          title={sec.title}
         >
           {sec.options.map((option, j) => (
             <OptionElement
