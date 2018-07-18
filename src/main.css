@@ -79,3 +79,12 @@
 .option:focus {
   border: 10px solid pink;
 }
+
+.disabled {
+  opacity: 0.5;
+  background: #f0f0f0;
+}
+
+.disabled:hover {
+  cursor: no-drop;
+}

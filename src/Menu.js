@@ -205,11 +205,12 @@ export default class MenuPortal extends Component {
 
     const options = this.getOptions();
     const maxFocus = options.length - 1;
+    const focusedOption = options[this.state.focused];
 
     // NOTE: This method is called when the menu is
     // opened with the keyboard. This case handles it
-    if (e.key === 'Enter' && options[this.state.focused]) {
-      this.props.onClick(options[this.state.focused].value);
+    if (e.key === 'Enter' && focusedOption && !focusedOption.disabled) {
+      this.props.onClick(focusedOption.value);
     } else if (e.key === 'ArrowDown') {
       this.setState(prevState => ({
         focused: prevState.focused < maxFocus ? prevState.focused + 1 : maxFocus,

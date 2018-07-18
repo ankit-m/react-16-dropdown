@@ -13,6 +13,7 @@ import React from 'react';
 export function OptionRenderer(props) {
   const classes = 'option' +
       (props.focused ? ' focused' : '') +
+      (props.disabled ? ' disabled' : '') +
       (props.className ? ` ${props.className}` : '');
 
   return (
@@ -43,7 +44,7 @@ export default function Option(props) {
       role='option'
       tabIndex={-1}
       ref={props.optionRef}
-      onClick={props.onClick}
+      onClick={props.data.disabled ? undefined : props.onClick}
     >
       <Renderer
         {...props.data}

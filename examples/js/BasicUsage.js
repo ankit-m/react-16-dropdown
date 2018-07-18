@@ -6,6 +6,7 @@ export default function BasicUsage() {
   const movieOptions = [{
     label: 'Prestige 🎩',
     value: 'prestige',
+    disabled: true
   }, {
     label: 'Inception 😴',
     value: 'inception'
@@ -68,6 +69,7 @@ export default function BasicUsage() {
 `const options = [{
   label: 'Prestige 🎩',
   value: 'prestige',
+  disabled: true
 }, {
   label: 'Inception 😴',
   value: 'inception',
