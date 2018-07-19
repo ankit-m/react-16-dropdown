@@ -24,8 +24,7 @@ function MenuRenderer(props) {
  */
 function MenuSectionRenderer(props) {
   const className = 'menu-section' +
-    (props.className ? ` ${props.className}` : '') +
-    (props.disabled ? ' disabled' : '');
+    (props.className ? ` ${props.className}` : '');
 
   return (
     <div className={className}>
