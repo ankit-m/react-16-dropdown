@@ -75,6 +75,7 @@ The `options` prop is an array of objects. Each object can have the following ke
 |value*|`String`|Unique identifier for each option|
 |label*|<`String`|`ReactElement`>|Display label for the option|
 |className|`String`|Custom class name for the option|
+|disabled|`Boolean`|Is the option disabled?|
 
 
 In case you are using sections you need to pass the `sections` prop, which is an array of objects. Each object can have the following keys -
