@@ -52,6 +52,10 @@ export default class Dropdown extends Component {
   }
 
   setTriggerRect() {
+    if (!this.triggerRef.current) {
+      return;
+    }
+
     this.setState({
       triggerBoundingRect: getAbsoluteBoundingRect(this.triggerRef.current),
     });
@@ -89,6 +93,9 @@ export default class Dropdown extends Component {
   }
 
   handleTriggerClick() {
+    // re-calculating the position of dropdown to remove scrolling side effects
+    this.setTriggerRect();
+
     typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
 
     if (this.controlled) {
