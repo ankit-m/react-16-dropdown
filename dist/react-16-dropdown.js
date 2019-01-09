@@ -173,6 +173,10 @@ var Dropdown = function (_Component) {
   }, {
     key: 'setTriggerRect',
     value: function setTriggerRect() {
+      if (!this.triggerRef.current) {
+        return;
+      }
+
       this.setState({
         triggerBoundingRect: (0, _utils.getAbsoluteBoundingRect)(this.triggerRef.current)
       });
@@ -220,6 +224,9 @@ var Dropdown = function (_Component) {
   }, {
     key: 'handleTriggerClick',
     value: function handleTriggerClick() {
+      // re-calculating the position of dropdown to remove scrolling side effects
+      this.setTriggerRect();
+
       typeof this.props.onTriggerClick === 'function' && this.props.onTriggerClick();
 
       if (this.controlled) {
@@ -296,7 +303,9 @@ Dropdown.defaultProps = {
   closeOnClickOutside: true,
   closeOnOptionClick: false,
   disabled: false,
-  align: 'left'
+  align: 'left',
+  options: [],
+  sections: []
 };
 
 /***/ }),
@@ -309,6 +318,8 @@ Dropdown.defaultProps = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -332,10 +343,54 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Default menu renderer
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} props.children - Options to render
+ * @returns {ReactElement} menu
+ */
 function MenuRenderer(props) {
   return props.children;
 }
 
+/**
+ * Default component for menu section
+ *
+ * @param {Object} props - React props
+ * @param {String} props.title - Section title
+ * @param {ReactElement} props.children - Options in the section
+ * @returns {ReactElement} menu section
+ */
+function MenuSectionRenderer(props) {
+  var className = 'menu-section' + (props.className ? ' ' + props.className : '');
+
+  return _react2.default.createElement(
+    'div',
+    { className: className },
+    _react2.default.createElement(
+      'div',
+      { className: 'menu-section__title' },
+      props.title
+    ),
+    _react2.default.createElement(
+      'div',
+      { className: 'menu-section__body' },
+      props.children
+    )
+  );
+}
+
+/**
+ * Default menu component
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} props.renderer - Menu renderer
+ * @param {ReactRef} props.menuRef - Ref for the menu component
+ * @param {Object} props.style - Inline styles for menu
+ * @param {Function} props.onKeyDown - Handler for keyboard events
+ * @param {ReactElement} props.children - Option elements
+ */
 function Menu(props) {
   var Renderer = props.renderer;
 
@@ -358,7 +413,7 @@ function Menu(props) {
 }
 
 /**
- * Managing focus
+ * Portal for the menu
  *
  * @help https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets#Using_tabindex
  */
@@ -381,6 +436,8 @@ var MenuPortal = function (_Component) {
     _this.handleKeyDown = _this.handleKeyDown.bind(_this);
     _this.getAlignment = _this.getAlignment.bind(_this);
     _this.setOptionRefs = _this.setOptionRefs.bind(_this);
+    _this.getOptions = _this.getOptions.bind(_this);
+    _this.getOptionElements = _this.getOptionElements.bind(_this);
     return _this;
   }
 
@@ -398,10 +455,12 @@ var MenuPortal = function (_Component) {
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
+      var options = this.getOptions();
+
       var key = void 0;
 
-      if (this.props.controlled) {
-        var selected = this.props.options[this.state.focused];
+      if (!this.props.controlled) {
+        var selected = options[this.state.focused];
 
         key = selected && selected.value;
       } else {
@@ -413,7 +472,7 @@ var MenuPortal = function (_Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      document.body.removeChild(this.el);
+      document.querySelector(this.props.menuPortalTarget).removeChild(this.el);
     }
   }, {
     key: 'getAlignment',
@@ -439,6 +498,78 @@ var MenuPortal = function (_Component) {
       return {};
     }
   }, {
+    key: 'getOptions',
+    value: function getOptions() {
+      var _props = this.props,
+          options = _props.options,
+          sections = _props.sections;
+
+
+      if (sections.length) {
+        return sections.reduce(function (res, sec) {
+          return res.concat(sec.options);
+        }, []);
+      }
+
+      return options;
+    }
+  }, {
+    key: 'getOptionElements',
+    value: function getOptionElements() {
+      var _this2 = this;
+
+      var sections = this.props.sections;
+
+      var options = this.getOptions();
+      var OptionElement = this.props.optionComponent;
+      var SectionRenderer = this.props.menuSectionRenderer;
+      var focused = this.props.controlled ? options.map(function (o) {
+        return o.value;
+      }).indexOf(this.props.focused) : this.state.focused;
+
+      if (sections.length) {
+        return sections.map(function (sec, i) {
+          return _react2.default.createElement(
+            SectionRenderer,
+            _extends({}, sec, {
+              key: sec.id
+            }),
+            sec.options.map(function (option, j) {
+              return _react2.default.createElement(OptionElement, {
+                className: option.className,
+                data: option,
+                focused: focused === i * (i + 1) + j,
+                key: option.value,
+                optionRef: function optionRef(node) {
+                  return _this2.setOptionRefs(node, option.value);
+                },
+                renderer: _this2.props.optionRenderer,
+                onClick: function onClick() {
+                  _this2.props.onClick(option);
+                }
+              });
+            })
+          );
+        });
+      }
+
+      return options.map(function (option, i) {
+        return _react2.default.createElement(OptionElement, {
+          className: option.className,
+          data: option,
+          focused: focused === i,
+          key: option.value,
+          optionRef: function optionRef(node) {
+            return _this2.setOptionRefs(node, option.value);
+          },
+          renderer: _this2.props.optionRenderer,
+          onClick: function onClick() {
+            _this2.props.onClick(option);
+          }
+        });
+      });
+    }
+  }, {
     key: 'setOptionRefs',
     value: function setOptionRefs(node, key) {
       node && (this.optionRefs[key] = node);
@@ -452,14 +583,14 @@ var MenuPortal = function (_Component) {
         return;
       }
 
-      var options = this.props.options;
-
+      var options = this.getOptions();
       var maxFocus = options.length - 1;
+      var focusedOption = options[this.state.focused];
 
       // NOTE: This method is called when the menu is
       // opened with the keyboard. This case handles it
-      if (e.key === 'Enter' && options[this.state.focused]) {
-        this.props.onClick(options[this.state.focused].value);
+      if (e.key === 'Enter' && focusedOption && !focusedOption.disabled) {
+        this.props.onClick(focusedOption.value);
       } else if (e.key === 'ArrowDown') {
         this.setState(function (prevState) {
           return {
@@ -479,13 +610,7 @@ var MenuPortal = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
-      var OptionElement = this.props.optionComponent;
       var MenuElement = this.props.menuComponent;
-      var focused = this.props.controlled ? this.props.options.map(function (o) {
-        return o.value;
-      }).indexOf(this.props.focused) : this.state.focused;
 
       var menu = _react2.default.createElement(
         MenuElement,
@@ -495,21 +620,7 @@ var MenuPortal = function (_Component) {
           style: this.getAlignment(),
           onKeyDown: this.handleKeyDown
         },
-        this.props.options.map(function (option, i) {
-          return _react2.default.createElement(OptionElement, {
-            className: option.className,
-            data: option,
-            focused: focused === i,
-            key: option.value,
-            optionRef: function optionRef(node) {
-              return _this2.setOptionRefs(node, option.value);
-            },
-            renderer: _this2.props.optionRenderer,
-            onClick: function onClick() {
-              _this2.props.onClick(option);
-            }
-          });
-        })
+        this.getOptionElements()
       );
 
       return _reactDom2.default.createPortal(menu, this.el);
@@ -526,6 +637,7 @@ MenuPortal.defaultProps = {
   menuComponent: Menu,
   optionComponent: _Option2.default,
   menuRenderer: MenuRenderer,
+  menuSectionRenderer: MenuSectionRenderer,
   menuPortalTarget: 'body'
 };
 
@@ -557,8 +669,18 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Default renderer for option. Renders a div with
+ * child as label.
+ *
+ * @param {Object} props - React props
+ * @param {String} props.className - Custom class
+ * @param {Boolean} props.focused - Is focused?
+ * @param {String|ReactElement} props.label - Option label
+ * @returns {ReactElement}
+ */
 function OptionRenderer(props) {
-  var classes = 'option' + (props.focused ? ' focused' : '') + (props.className ? ' ' + props.className : '');
+  var classes = 'option' + (props.focused ? ' focused' : '') + (props.disabled ? ' disabled' : '') + (props.className ? ' ' + props.className : '');
 
   return _react2.default.createElement(
     'div',
@@ -567,6 +689,18 @@ function OptionRenderer(props) {
   );
 }
 
+/**
+ * Default option component. It renders a div with
+ * renderer as a child.
+ *
+ * @param {Object} props - React props
+ * @param {Boolean} props.focused - Is option focused?
+ * @param {ReactRef} props.optionRef - React ref for option
+ * @param {Function} props.onClick - Click handler
+ * @param {Object} props.data - Option data
+ * @param {String} props.className - Custom class
+ * @returns {ReactElement}
+ */
 function Option(props) {
   var Renderer = props.renderer;
 
@@ -577,7 +711,7 @@ function Option(props) {
       role: 'option',
       tabIndex: -1,
       ref: props.optionRef,
-      onClick: props.onClick
+      onClick: props.data.disabled ? undefined : props.onClick
     },
     _react2.default.createElement(Renderer, _extends({}, props.data, {
       className: props.className,
@@ -610,6 +744,14 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Default trigger renderer - Displays a plain button
+ * with label
+ *
+ * @param {Object} props - React props
+ * @param {Boolean} props.disabled - Trigger disabled
+ * @param {String|ReactElement} props.label - Trigger display label
+ */
 function TriggerRenderer(props) {
   return _react2.default.createElement(
     'button',
@@ -621,6 +763,18 @@ function TriggerRenderer(props) {
   );
 }
 
+/**
+ * Default trigger component - Renders a div with
+ * all the handlers
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} [props.renderer] - Custom trigger renderer
+ * @param {ReactRef} props.triggerRef - React ref for trigger
+ * @param {Function} props.onClick - Click handler
+ * @param {Function} props.onKeyDown - Key down handler
+ * @param {Boolean} props.disabled - Trigger disabled
+ * @param {String|ReactElement} props.label - Trigger display label
+ */
 function Trigger(props) {
   var Renderer = props.renderer || TriggerRenderer;
 
