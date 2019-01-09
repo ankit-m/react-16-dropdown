@@ -3,10 +3,49 @@ import ReactDOM from 'react-dom';
 
 import Option from './Option';
 
+/**
+ * Default menu renderer
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} props.children - Options to render
+ * @returns {ReactElement} menu
+ */
 function MenuRenderer(props) {
   return props.children;
 }
 
+/**
+ * Default component for menu section
+ *
+ * @param {Object} props - React props
+ * @param {String} props.title - Section title
+ * @param {ReactElement} props.children - Options in the section
+ * @returns {ReactElement} menu section
+ */
+function MenuSectionRenderer(props) {
+  const className = 'menu-section' +
+    (props.className ? ` ${props.className}` : '');
+
+  return (
+    <div className={className}>
+      <div className='menu-section__title'>{props.title}</div>
+      <div className='menu-section__body'>
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Default menu component
+ *
+ * @param {Object} props - React props
+ * @param {ReactElement} props.renderer - Menu renderer
+ * @param {ReactRef} props.menuRef - Ref for the menu component
+ * @param {Object} props.style - Inline styles for menu
+ * @param {Function} props.onKeyDown - Handler for keyboard events
+ * @param {ReactElement} props.children - Option elements
+ */
 function Menu(props) {
   const Renderer = props.renderer;
 
@@ -25,7 +64,7 @@ function Menu(props) {
 }
 
 /**
- * Managing focus
+ * Portal for the menu
  *
  * @help https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets#Using_tabindex
  */
@@ -43,6 +82,8 @@ export default class MenuPortal extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.getAlignment = this.getAlignment.bind(this);
     this.setOptionRefs = this.setOptionRefs.bind(this);
+    this.getOptions = this.getOptions.bind(this);
+    this.getOptionElements = this.getOptionElements.bind(this);
   }
 
   componentDidMount() {
@@ -56,10 +97,12 @@ export default class MenuPortal extends Component {
   }
 
   componentDidUpdate() {
+    const options = this.getOptions();
+
     let key;
 
-    if (this.props.controlled) {
-      const selected = this.props.options[this.state.focused];
+    if (!this.props.controlled) {
+      const selected = options[this.state.focused];
 
       key = selected && selected.value;
     } else {
@@ -70,7 +113,7 @@ export default class MenuPortal extends Component {
   }
 
   componentWillUnmount() {
-    document.body.removeChild(this.el);
+    document.querySelector(this.props.menuPortalTarget).removeChild(this.el);
   }
 
   getAlignment() {
@@ -95,6 +138,59 @@ export default class MenuPortal extends Component {
     return {};
   }
 
+  getOptions() {
+    const { options, sections } = this.props;
+
+    if (sections.length) {
+      return sections.reduce((res, sec) => res.concat(sec.options), []);
+    }
+
+    return options;
+  }
+
+  getOptionElements() {
+    const { sections } = this.props;
+    const options = this.getOptions();
+    const OptionElement = this.props.optionComponent;
+    const SectionRenderer = this.props.menuSectionRenderer;
+    const focused = this.props.controlled ?
+      options.map(o => o.value).indexOf(this.props.focused) :
+      this.state.focused;
+
+    if (sections.length) {
+      return sections.map((sec, i) => (
+        <SectionRenderer
+          {...sec}
+          key={sec.id}
+        >
+          {sec.options.map((option, j) => (
+            <OptionElement
+              className={option.className}
+              data={option}
+              focused={focused === (i * (i + 1)) + j}
+              key={option.value}
+              optionRef={node => this.setOptionRefs(node, option.value)}
+              renderer={this.props.optionRenderer}
+              onClick={() => { this.props.onClick(option); }}
+            />
+          ))}
+        </SectionRenderer>
+      ));
+    }
+
+    return options.map((option, i) => (
+      <OptionElement
+        className={option.className}
+        data={option}
+        focused={focused === i}
+        key={option.value}
+        optionRef={node => this.setOptionRefs(node, option.value)}
+        renderer={this.props.optionRenderer}
+        onClick={() => { this.props.onClick(option); }}
+      />
+    ));
+  }
+
   setOptionRefs(node, key) {
     node && (this.optionRefs[key] = node);
   }
@@ -106,13 +202,14 @@ export default class MenuPortal extends Component {
       return;
     }
 
-    const { options } = this.props;
+    const options = this.getOptions();
     const maxFocus = options.length - 1;
+    const focusedOption = options[this.state.focused];
 
     // NOTE: This method is called when the menu is
     // opened with the keyboard. This case handles it
-    if (e.key === 'Enter' && options[this.state.focused]) {
-      this.props.onClick(options[this.state.focused].value);
+    if (e.key === 'Enter' && focusedOption && !focusedOption.disabled) {
+      this.props.onClick(focusedOption.value);
     } else if (e.key === 'ArrowDown') {
       this.setState(prevState => ({
         focused: prevState.focused < maxFocus ? prevState.focused + 1 : maxFocus,
@@ -127,11 +224,7 @@ export default class MenuPortal extends Component {
   }
 
   render() {
-    const OptionElement = this.props.optionComponent;
     const MenuElement = this.props.menuComponent;
-    const focused = this.props.controlled ?
-      this.props.options.map(o => o.value).indexOf(this.props.focused) :
-      this.state.focused;
 
     const menu = (
       <MenuElement
@@ -140,17 +233,7 @@ export default class MenuPortal extends Component {
         style={this.getAlignment()}
         onKeyDown={this.handleKeyDown}
       >
-        {this.props.options.map((option, i) => (
-          <OptionElement
-            className={option.className}
-            data={option}
-            focused={focused === i}
-            key={option.value}
-            optionRef={node => this.setOptionRefs(node, option.value)}
-            renderer={this.props.optionRenderer}
-            onClick={() => { this.props.onClick(option); }}
-          />
-        ))}
+        {this.getOptionElements()}
       </MenuElement>
     );
 
@@ -162,5 +245,6 @@ MenuPortal.defaultProps = {
   menuComponent: Menu,
   optionComponent: Option,
   menuRenderer: MenuRenderer,
+  menuSectionRenderer: MenuSectionRenderer,
   menuPortalTarget: 'body',
 };

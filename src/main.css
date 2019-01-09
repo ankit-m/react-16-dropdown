@@ -17,6 +17,7 @@
   background: #f0f0f0;
 }
 
+/*********************** Menu styles begin ***********************/
 .menu {
   position: absolute;
   background: white;
@@ -28,9 +29,41 @@
   box-shadow : 0 0 10px -5px #000000;
 }
 
+.menu-section {
+  border-bottom: 1px solid #dcdcdc;
+  border-top: 1px solid #dcdcdc;
+}
+
+.menu-section:first-of-type {
+  border-top: 0;
+}
+
+.menu-section:last-of-type {
+  border-bottom: 0;
+}
+
+.menu-section + .menu-section {
+  border-top: 0;
+}
+
+.menu-section__title {
+  font-size: 1rem;
+  padding: .5rem;
+  font-weight: bold;
+}
+
+.menu-section-title:empty {
+  padding: 0;
+}
+
+.menu-section-title:empty + .menu-section {
+  border-top: 0;
+}
+
 .menu:focus {
   /* outline: none */
 }
+/*********************** Menu styles end ***********************/
 
 .option {
   min-height: 24px;
@@ -45,4 +78,13 @@
 
 .option:focus {
   border: 10px solid pink;
+}
+
+.disabled {
+  opacity: 0.5;
+  background: #f0f0f0;
+}
+
+.disabled:hover {
+  cursor: no-drop;
 }
