@@ -81,6 +81,10 @@ export default class Dropdown extends Component {
   }
 
   handleClickOutside(e) {
+    if (!this.menuRef.current) {
+      return;
+    }
+
     if (!this.menuRef.current.contains(e.target)) {
       this.closeMenu();
     }
