@@ -171,6 +171,12 @@ var Dropdown = function (_Component) {
       }
     }
   }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      document.removeEventListener('keyup', this.handleEscape);
+      document.removeEventListener('click', this.handleClickOutside);
+    }
+  }, {
     key: 'setTriggerRect',
     value: function setTriggerRect() {
       if (!this.triggerRef.current) {
@@ -210,6 +216,10 @@ var Dropdown = function (_Component) {
   }, {
     key: 'handleClickOutside',
     value: function handleClickOutside(e) {
+      if (!this.menuRef.current) {
+        return;
+      }
+
       if (!this.menuRef.current.contains(e.target)) {
         this.closeMenu();
       }
