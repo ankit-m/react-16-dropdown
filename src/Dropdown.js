@@ -51,6 +51,11 @@ export default class Dropdown extends Component {
     }
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.handleEscape);
+    document.removeEventListener('click', this.handleClickOutside);
+  }
+
   setTriggerRect() {
     if (!this.triggerRef.current) {
       return;
