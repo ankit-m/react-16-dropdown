@@ -80,11 +80,11 @@
   border: 10px solid pink;
 }
 
-.disabled {
+.option.disabled {
   opacity: 0.5;
   background: #f0f0f0;
 }
 
-.disabled:hover {
+.option.disabled:hover {
   cursor: no-drop;
 }
