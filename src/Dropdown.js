@@ -42,6 +42,10 @@ export default class Dropdown extends Component {
       typeof this.props.onOpen === 'function' && this.props.onOpen();
     }
 
+    if (!this.state.open && prevState.open) {
+      typeof this.props.onClose === 'function' && this.props.onClose();
+    }
+
     if (this.state.open) {
       this.props.closeOnEscape && document.addEventListener('keyup', this.handleEscape);
       this.props.closeOnClickOutside && document.addEventListener('click', this.handleClickOutside);
